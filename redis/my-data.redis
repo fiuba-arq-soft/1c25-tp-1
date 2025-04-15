@@ -1,0 +1,9 @@
+HSET account:1 id 1 currency "ARS" balance 120000000
+HSET account:2 id 2 currency "USD" balance 60000
+HSET account:3 id 3 currency "EUR" balance 40000
+HSET account:4 id 4 currency "BRL" balance 60000
+
+HSET rate:ARS BRL 0.00553 EUR 0.00091 USD 0.00094
+HSET rate:BRL ARS 180.8
+HSET rate:EUR ARS 1104
+HSET rate:USD ARS 1064

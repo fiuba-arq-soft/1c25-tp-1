@@ -1,6 +1,11 @@
 services:
     api:
       build: ./app
+      depends_on:
+        - redis
+
+    redis:
+        build: ./redis
 
     nginx:
         image: nginx:1.27.4
