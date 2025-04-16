@@ -37,13 +37,13 @@ config:
 # Scenarios
 scenarios:
   # Scenario for Get Rates
-  - name: Get
+  - name: GET_Rates
     flow:
       - get:
           url: '/rates'
 
   # Scenario for Put Rates
-  - name: Put
+  - name: PUT_Rates
     flow:
       - put:
           url: '/rates'

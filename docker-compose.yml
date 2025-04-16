@@ -2,7 +2,7 @@ services:
     api:
       build: ./app
       deploy:
-        replicas: 3 # Number of replicas for the API service, docker-compose up --scale api=3 or 2 or 1 to adjust the number of replicas
+        replicas: 1 # Number of replicas for the API service, docker-compose up --scale api=3 or 2 or 1 to adjust the number of replicas
 
     nginx:
         image: nginx:1.27.4

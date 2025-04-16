@@ -1,0 +1,70 @@
+config:
+  environments:
+    api:
+      target: 'http://localhost:5555'
+      plugins:
+        statsd:
+          host: localhost
+          port: 8125
+          prefix: "artillery-api"
+  payload:
+    # path is relative to the location of the test script
+    path: 'balances.csv'
+    fields:
+      - 'accountId'
+      - 'balance'
+
+  pool: 50 # All HTTP requests from all virtual users will be sent over the same connections
+
+  # General Phases for all scenarios
+  phases:
+    - name: Ramp
+      duration: 30
+      arrivalRate: 1
+      rampTo: 10
+    - name: Plain
+      duration: 60
+      arrivalRate: 10
+
+scenarios:
+  # Scenario for Get Accounts
+  - name: GET_Accounts
+    flow:
+      - get:
+          url: '/accounts'
+
+    # Specific phases for this scenario
+    phases:
+      - name: Ramp
+        duration: 30
+        arrivalRate: 10
+        rampTo: 50
+      - name: Plain
+        duration: 60
+        arrivalRate: 50
+      - name: Ramp
+        duration: 30
+        arrivalRate: 50
+        rampTo: 100
+      - name: Plain
+        duration: 60
+        arrivalRate: 100
+
+  # Scenario for Put Account Balance
+  - name: PUT_Account_Balance
+    flow:
+      - put:
+          url: '/accounts/{{ accountId }}/balance'
+          json: 
+            balance: '{{ balance }}'
+
+    # Specific phases for this scenario
+    phases:
+      - name: Ramp to 50 in 30s
+        duration: 30
+        arrivalRate: 10
+        rampTo: 50
+      - name: Plain in 50 by 60s
+        duration: 60
+        arrivalRate: 50
+
