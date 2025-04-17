@@ -9,49 +9,54 @@ config:
           prefix: "artillery-api"
   payload:
     # path is relative to the location of the test script
-    path: 'rates.csv'
+    path: 'balances.csv'
     fields:
-      - 'baseCurrency'
-      - 'counterCurrency'
-      - 'rate'
+      - 'accountId'
+      - 'balance'
 
   pool: 50 # All HTTP requests from all virtual users will be sent over the same connections
 
   # General Phases for all scenarios
   phases:
-    - name: Ramp to 5 in 30s
+    - name: Ramp
       duration: 30
       arrivalRate: 1
-      rampTo: 5
-    - name: Plain in 5 by 60s
-      duration: 60
-      arrivalRate: 5
-    - name: Ramp to 10 in 30s
-      duration: 30
-      arrivalRate: 5
       rampTo: 10
-    - name: Plain in 10 by 60s
+    - name: Plain
       duration: 60
-      arrivalRate: 10    
+      arrivalRate: 10
 
-# Scenarios
 scenarios:
-  # Scenario for Get Rates
-  - name: GET_Rates
+  # Scenario for Get Accounts
+  - name: GET_Accounts
     flow:
       - get:
-          url: '/rates'
+          url: '/accounts'
 
-  # Scenario for Put Rates
-  - name: PUT_Rates
+    # Specific phases for this scenario
+    phases:
+      - name: Ramp
+        duration: 30
+        arrivalRate: 10
+        rampTo: 50
+      - name: Plain
+        duration: 60
+        arrivalRate: 50
+      - name: Ramp
+        duration: 30
+        arrivalRate: 50
+        rampTo: 100
+      - name: Plain
+        duration: 60
+        arrivalRate: 100
+
+  # Scenario for Put Account Balance
+  - name: PUT_Account_Balance
     flow:
       - put:
-          url: '/rates'
+          url: '/accounts/{{ accountId }}/balance'
           json: 
-            baseCurrency: '{{ baseCurrency }}'
-            counterCurrency: '{{ counterCurrency }}'
-            rate: '{{ rate }}'
-
+            balance: '{{ balance }}'
 
     # Specific phases for this scenario
     phases:
@@ -62,10 +67,11 @@ scenarios:
       - name: Plain in 50 by 60s
         duration: 60
         arrivalRate: 50
-      - name: Ramp to 100 in 30s
+      - name: Ramp
         duration: 30
         arrivalRate: 50
         rampTo: 100
-      - name: Plain in 100 by 60s
+      - name: Plain
         duration: 60
         arrivalRate: 100
+

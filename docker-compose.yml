@@ -1,6 +1,8 @@
 services:
     api:
       build: ./app
+      deploy:
+        replicas: 1 # Number of replicas for the API service, docker-compose up --scale api=3 or 2 or 1 to adjust the number of replicas
 
     nginx:
         image: nginx:1.27.4
@@ -9,7 +11,7 @@ services:
         volumes:
             - ./nginx_reverse_proxy.conf:/etc/nginx/conf.d/default.conf:ro
             - ./store/static/files:/static:ro
-        links:
+        depends_on:
             - api
 
     graphite:
@@ -25,7 +27,7 @@ services:
     grafana:
         image: grafana/grafana:11.5.2
         ports:
-            - "80:3000"
+            - "8100:3000"
         volumes:
             - "grafana_config:/var/lib/grafana"
 

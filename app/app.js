@@ -20,12 +20,15 @@ app.use(express.json());
 // ACCOUNT endpoints
 
 app.get("/accounts", (req, res) => {
+  console.log("GET /accounts");
   res.json(getAccounts());
 });
 
 app.put("/accounts/:id/balance", (req, res) => {
   const accountId = req.params.id;
   const { balance } = req.body;
+
+  console.log("PUT /accounts/" + accountId + "/balance");
 
   if (!accountId || !balance) {
     return res.status(400).json({ error: "Malformed request" });
@@ -39,11 +42,14 @@ app.put("/accounts/:id/balance", (req, res) => {
 // RATE endpoints
 
 app.get("/rates", (req, res) => {
+  console.log("GET /rates");
   res.json(getRates());
 });
 
 app.put("/rates", (req, res) => {
   const { baseCurrency, counterCurrency, rate } = req.body;
+
+  console.log("PUT /rates");
 
   if (!baseCurrency || !counterCurrency || !rate) {
     return res.status(400).json({ error: "Malformed request" });
@@ -58,6 +64,8 @@ app.put("/rates", (req, res) => {
 // LOG endpoint
 
 app.get("/log", (req, res) => {
+  console.log("GET /log");
+
   res.json(getLog());
 });
 
@@ -71,6 +79,8 @@ app.post("/exchange", async (req, res) => {
     counterAccountId,
     baseAmount,
   } = req.body;
+
+  console.log("POST /exchange");
 
   if (
     !baseCurrency ||
