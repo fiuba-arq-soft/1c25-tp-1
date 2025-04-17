@@ -67,4 +67,11 @@ scenarios:
       - name: Plain in 50 by 60s
         duration: 60
         arrivalRate: 50
+      - name: Ramp
+        duration: 30
+        arrivalRate: 50
+        rampTo: 100
+      - name: Plain
+        duration: 60
+        arrivalRate: 100
 
