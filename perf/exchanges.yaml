@@ -41,13 +41,13 @@ config:
     - name: Plain
       duration: 60
       arrivalRate: 100
-    #- name: Ramp
-    #  duration: 30
-    #  arrivalRate: 100
-    #  rampTo: 200
-    #- name: Plain
-    #  duration: 60
-    #  arrivalRate: 200
+    - name: Ramp
+      duration: 30
+      arrivalRate: 100
+      rampTo: 150
+    - name: Plain
+      duration: 60
+      arrivalRate: 150
     
 
 scenarios:
