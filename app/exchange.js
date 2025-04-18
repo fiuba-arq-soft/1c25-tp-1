@@ -16,9 +16,6 @@ export async function getAccounts() {
 
 //sets balance for an account
 export async function setAccountBalance(accountId, balance) {
-  if (!accountId || balance === undefined || balance === null) {
-    throw new Error("Invalid accountId or balance");
-  }
 
   console.log(
     `Setting account balance with accountId ${accountId} and balance ${balance}`
@@ -50,12 +47,13 @@ export async function getRates() {
 
 //returns the whole transaction log
 export async function getLog() {
-  // compruebo que log sea una clave
-  const keys = await client.keys("log");
-  if (keys.length === 0) {
+  console.log("Fetching log...");
+  const exists = await client.exists("log");
+  if (!exists) {
     return [];
   }
-  return await client.get("log");
+
+  return (await client.lRange("log", 0, -1)).map(entry => JSON.parse(entry));
 }
 
 //sets the exchange rate for a given pair of currencies, and the reciprocal rate as well
@@ -183,4 +181,12 @@ async function transfer(_fromAccountId, _toAccountId, _amount) {
   return new Promise((resolve) =>
     setTimeout(() => resolve(true), Math.random() * (max - min + 1) + min)
   );
+}
+
+export async function accountExists(accountId) {
+  return await client.exists("account:" + accountId);
+}
+
+export async function rateExists(rateId) {
+  return await client.exists("rate:" + rateId);
 }
