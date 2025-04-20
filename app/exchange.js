@@ -16,12 +16,12 @@ export async function init() {
 }
 
 //returns all internal accounts
-export function getAccounts() {
+export async function getAccounts() {
   return accounts;
 }
 
 //sets balance for an account
-export function setAccountBalance(accountId, balance) {
+export async function setAccountBalance(accountId, balance) {
   const account = findAccountById(accountId);
 
   if (account != null) {
@@ -30,17 +30,17 @@ export function setAccountBalance(accountId, balance) {
 }
 
 //returns all current exchange rates
-export function getRates() {
+export async function getRates() {
   return rates;
 }
 
 //returns the whole transaction log
-export function getLog() {
+export async function getLog() {
   return log;
 }
 
 //sets the exchange rate for a given pair of currencies, and the reciprocal rate as well
-export function setRate(rateRequest) {
+export async function setRate(rateRequest) {
   const { baseCurrency, counterCurrency, rate } = rateRequest;
 
   rates[baseCurrency][counterCurrency] = rate;

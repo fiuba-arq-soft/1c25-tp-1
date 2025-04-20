@@ -44,6 +44,13 @@ services:
             - "/sys:/sys:ro"
             - "/var/lib/docker/:/var/lib/docker:ro"
 
+    redis:
+        image: redis:7.0.12
+        ports:
+            - "6379:6379"
+        volumes:
+            - ./redis_data:/data
+
 volumes:
     grafana_config:
         driver: local

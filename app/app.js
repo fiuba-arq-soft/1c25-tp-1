@@ -1,14 +1,27 @@
 import express from "express";
+import dotenv from "dotenv";
 
-import {
-  init as exchangeInit,
-  getAccounts,
-  setAccountBalance,
-  getRates,
-  setRate,
-  getLog,
-  exchange,
-} from "./exchange.js";
+// Load environment variables from .env file
+dotenv.config();
+
+// Determine which exchange module to use based on an environment variable
+const useRedis = process.env.USE_REDIS === "true";
+
+const exchangeModule = useRedis
+  ? await import("./exchange-redis.js")
+  : await import("./exchange.js");
+  
+const {
+    init: exchangeInit,
+    getAccounts,
+    createAccount,
+    setAccountBalance,
+    getRates,
+    createRate,
+    setRate,
+    getLog,
+    exchange,
+} = exchangeModule;
 
 await exchangeInit();
 
@@ -19,12 +32,25 @@ app.use(express.json());
 
 // ACCOUNT endpoints
 
-app.get("/accounts", (req, res) => {
+app.get("/accounts", async (req, res) => {
   console.log("GET /accounts");
-  res.json(getAccounts());
+  res.json(await getAccounts());
 });
 
-app.put("/accounts/:id/balance", (req, res) => {
+app.post("/accounts", async (req, res) => {
+  const { id, currency, balance } = req.body;
+  console.log("POST /accounts");  
+
+  if (!id || !currency || !balance) {
+    return res.status(400).json({ error: "Malformed request" });
+  } else {
+    createAccount(id, currency, balance);
+
+    res.json(await getAccounts());
+  }
+});
+
+app.put("/accounts/:id/balance", async (req, res) => {
   const accountId = req.params.id;
   const { balance } = req.body;
 
@@ -33,20 +59,35 @@ app.put("/accounts/:id/balance", (req, res) => {
   if (!accountId || !balance) {
     return res.status(400).json({ error: "Malformed request" });
   } else {
-    setAccountBalance(accountId, balance);
+    await setAccountBalance(accountId, balance);
 
-    res.json(getAccounts());
+    res.json(await getAccounts());
   }
 });
 
 // RATE endpoints
 
-app.get("/rates", (req, res) => {
+app.get("/rates", async (req, res) => {
   console.log("GET /rates");
-  res.json(getRates());
+  res.json(await getRates());
 });
 
-app.put("/rates", (req, res) => {
+app.post("/rates", async (req, res) => {
+  const { baseCurrency, counterCurrency, rate } = req.body;
+
+  console.log("POST /rates");
+
+  if (!baseCurrency || !counterCurrency || !rate) {
+    return res.status(400).json({ error: "Malformed request" });
+  }
+
+  const newRateRequest = { ...req.body };
+  await setRate(newRateRequest);
+
+  res.json(await getRates());
+});
+
+app.put("/rates", async (req, res) => {
   const { baseCurrency, counterCurrency, rate } = req.body;
 
   console.log("PUT /rates");
@@ -56,17 +97,17 @@ app.put("/rates", (req, res) => {
   }
 
   const newRateRequest = { ...req.body };
-  setRate(newRateRequest);
+  await setRate(newRateRequest);
 
-  res.json(getRates());
+  res.json(await getRates());
 });
 
 // LOG endpoint
 
-app.get("/log", (req, res) => {
+app.get("/log", async (req, res) => {
   console.log("GET /log");
 
-  res.json(getLog());
+  res.json(await getLog());
 });
 
 // EXCHANGE endpoint
