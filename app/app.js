@@ -47,6 +47,15 @@ function validatePositiveIntegerFields(fields) {
   return null;
 }
 
+function validatePositiveNumberFields(fields) {
+  for (const [key, value] of Object.entries(fields)) {
+    if (typeof value !== "number" || value <= 0) {
+      return `Invalid ${key}. Must be a positive number.`;
+    }
+  }
+  return null;
+}
+
 function evaluateFieldsForRate(baseCurrency, counterCurrency, rate) {
   const missingFieldError = checkRequiredFields({ baseCurrency, counterCurrency, rate });
   if (missingFieldError) {
@@ -61,6 +70,30 @@ function evaluateFieldsForRate(baseCurrency, counterCurrency, rate) {
   const invalidRateError = validatePositiveIntegerFields({ rate });
   if (invalidRateError) {
     return invalidRateError;
+  }
+
+  return null;
+}
+
+function evaluateFieldsForExchange(baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount) {
+  const missingFieldError = checkRequiredFields({ baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount });
+  if (missingFieldError) {
+    return missingFieldError;
+  }
+
+  const invalidCurrencyFormatError = validateCorrectCurrencyFormats({ baseCurrency, counterCurrency });
+  if (invalidCurrencyFormatError) {
+    return invalidCurrencyFormatError;
+  }
+
+  const invalidAccountsIdError = validatePositiveIntegerFields({ baseAccountId, counterAccountId });
+  if (invalidAccountsIdError) {
+    return invalidAccountsIdError;
+  }
+
+  const invalidAmountError = validatePositiveNumberFields({ baseAmount });
+  if (invalidAmountError) {
+    return invalidAmountError;
   }
 
   return null;
@@ -138,48 +171,9 @@ app.post("/exchange", async (req, res) => {
     baseAmount,
   } = req.body;
 
-  if (baseCurrency === undefined) {
-    return res.status(400).json({ error: "Missing field: baseCurrency" });
-  }
-
-  if (counterCurrency === undefined) {
-    return res.status(400).json({ error: "Missing field: counterCurrency" });
-  }
-
-  if (baseAccountId === undefined) {
-    return res.status(400).json({ error: "Missing field: baseAccountId" });
-  }
-
-  if (counterAccountId === undefined) {
-    return res.status(400).json({ error: "Missing field: counterAccountId" });
-  }
-
-  if (baseAmount === undefined) {
-    return res.status(400).json({ error: "Missing field: baseAmount" });
-  }
-
-  if (typeof baseCurrency !== "string" || baseCurrency.length !== 3) {
-    return res.status(400).json({
-      error: "Invalid baseCurrency: must be a 3-character string"
-    });
-  }
-
-  if (typeof counterCurrency !== "string" || counterCurrency.length !== 3) {
-    return res.status(400).json({ 
-      error: "Invalid counterCurrency must be a 3-character string" 
-    });
-  }
-
-  if (!Number.isInteger(baseAccountId) || baseAccountId <= 0) {
-    return res.status(400).json({ error: "baseAccountId must be a positive integer" });
-  }
-
-  if (!Number.isInteger(counterAccountId) || counterAccountId <= 0) {
-    return res.status(400).json({ error: "counterAccountId must be a positive integer" });
-  }
-
-  if (typeof baseAmount !== "number" || baseAmount <= 0) {
-    return res.status(400).json({ error: "baseAmount must be a positive number" });
+  const fieldError = evaluateFieldsForExchange(baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
   }
 
   const exchangeRequest = { ...req.body };
