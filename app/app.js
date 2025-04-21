@@ -49,10 +49,36 @@ app.get("/rates", (req, res) => {
 app.put("/rates", (req, res) => {
   const { baseCurrency, counterCurrency, rate } = req.body;
 
-  console.log("PUT /rates");
+  if (baseCurrency === undefined) {
+    return res.status(400).json({ error: "Missing field: baseCurrency" });
+  }
 
-  if (!baseCurrency || !counterCurrency || !rate) {
-    return res.status(400).json({ error: "Malformed request" });
+  if (counterCurrency === undefined) {
+    return res.status(400).json({ error: "Missing field: counterCurrency" });
+  }
+
+  if (rate === undefined) {
+    return res.status(400).json({ error: "Missing field: rate" });
+  }
+
+  if (typeof baseCurrency !== "string" || baseCurrency.length !== 3) {
+    return res.status(400).json({
+      error: "Invalid baseCurrency: must be a 3-character string"
+    });
+  }
+
+  // Validación de counterCurrency
+  if (typeof counterCurrency !== "string" || counterCurrency.length !== 3) {
+    return res.status(400).json({
+      error: "Invalid counterCurrency: must be a 3-character string"
+    });
+  }
+
+  // Validación de rate
+  if (typeof rate !== "number" || !Number.isInteger(rate) || rate <= 0) {
+    return res.status(400).json({
+      error: "Invalid rate: must be an integer greater than 0"
+    });
   }
 
   const newRateRequest = { ...req.body };
