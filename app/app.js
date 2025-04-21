@@ -17,9 +17,58 @@ const port = 3000;
 
 app.use(express.json());
 
+function checkRequiredFields(fields) {
+  for (const [key, value] of Object.entries(fields)) {
+    if (value === undefined) {
+      return `Missing field: ${key}`;
+    }
+  }
+
+  return null;
+}
+
+function validateCorrectCurrencyFormats(currencies) {
+  for (const [key, value] of Object.entries(currencies)) {
+    if (typeof value !== "string" || value.length !== 3) {
+      return `Invalid ${key}: must be a 3-character string`;
+    }
+  }
+
+  return null;
+}
+
+function validatePositiveIntegerFields(fields) {
+  for (const [key, value] of Object.entries(fields)) {
+    if (!Number.isInteger(value) || value <= 0) {
+      return `Invalid ${key}. Must be a positive integer.`;
+    }
+  }
+
+  return null;
+}
+
+function evaluateFieldsForRate(baseCurrency, counterCurrency, rate) {
+  const missingFieldError = checkRequiredFields({ baseCurrency, counterCurrency, rate });
+  if (missingFieldError) {
+    return missingFieldError;
+  }
+
+  const invalidCurrencyFormatError = validateCorrectCurrencyFormats({ baseCurrency, counterCurrency });
+  if (invalidCurrencyFormatError) {
+    return invalidCurrencyFormatError;
+  }
+
+  const invalidRateError = validatePositiveIntegerFields({ rate });
+  if (invalidRateError) {
+    return invalidRateError;
+  }
+
+  return null;
+}
+
 // ACCOUNT endpoints
 
-app.get("/accounts", (req, res) => {
+app.get("/accounts", (_, res) => {
   console.log("GET /accounts");
   res.json(getAccounts());
 });
@@ -51,7 +100,7 @@ app.put("/accounts/:id/balance", (req, res) => {
 
 // RATE endpoints
 
-app.get("/rates", (req, res) => {
+app.get("/rates", (_, res) => {
   console.log("GET /rates");
   res.json(getRates());
 });
@@ -59,35 +108,9 @@ app.get("/rates", (req, res) => {
 app.put("/rates", (req, res) => {
   const { baseCurrency, counterCurrency, rate } = req.body;
 
-  if (baseCurrency === undefined) {
-    return res.status(400).json({ error: "Missing field: baseCurrency" });
-  }
-
-  if (counterCurrency === undefined) {
-    return res.status(400).json({ error: "Missing field: counterCurrency" });
-  }
-
-  if (rate === undefined) {
-    return res.status(400).json({ error: "Missing field: rate" });
-  }
-
-  if (typeof baseCurrency !== "string" || baseCurrency.length !== 3) {
-    return res.status(400).json({
-      error: "Invalid baseCurrency: must be a 3-character string"
-    });
-  }
-
-  // Validación de counterCurrency
-  if (typeof counterCurrency !== "string" || counterCurrency.length !== 3) {
-    return res.status(400).json({
-      error: "Invalid counterCurrency: must be a 3-character string"
-    });
-  }
-
-  if (!Number.isInteger(rate) || rate <= 0) {
-    return res.status(400).json({
-      error: "Invalid rate: must be an integer greater than 0"
-    });
+  const fieldError = evaluateFieldsForRate(baseCurrency, counterCurrency, rate);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
   }
 
   const newRateRequest = { ...req.body };
@@ -98,7 +121,7 @@ app.put("/rates", (req, res) => {
 
 // LOG endpoint
 
-app.get("/log", (req, res) => {
+app.get("/log", (_, res) => {
   console.log("GET /log");
 
   res.json(getLog());
