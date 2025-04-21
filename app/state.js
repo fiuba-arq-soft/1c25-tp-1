@@ -2,6 +2,7 @@ import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
 
+let tiers = null;
 let accounts = null;
 let rates = null;
 let log = null;
@@ -12,11 +13,13 @@ const __dirname = path.dirname(__filename);
 const ACCOUNTS = "./state/accounts.json";
 const RATES = "./state/rates.json";
 const LOG = "./state/log.json";
+const TIERS = "./state/tiers.json";
 
 export async function init() {
   accounts = await load(ACCOUNTS);
   rates = await load(RATES);
   log = await load(LOG);
+  tiers = await load(TIERS);
 
   scheduleSave(accounts, ACCOUNTS, 1000);
   scheduleSave(rates, RATES, 5000);
@@ -33,6 +36,10 @@ export function getRates() {
 
 export function getLog() {
   return log;
+}
+
+export function getTiers() {
+  return tiers;
 }
 
 async function load(fileName) {

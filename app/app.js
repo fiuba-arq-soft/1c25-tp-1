@@ -1,5 +1,7 @@
 import express from "express";
 
+import { getTiers } from "./state.js";
+
 import {
   init as exchangeInit,
   getAccounts,
@@ -16,6 +18,12 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+// TIERS endpoint
+
+app.get("/tiers", (_, res) => {
+  res.json(getTiers());
+});
 
 // ACCOUNT endpoints
 
