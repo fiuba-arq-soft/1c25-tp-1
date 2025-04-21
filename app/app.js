@@ -28,15 +28,25 @@ app.put("/accounts/:id/balance", (req, res) => {
   const accountId = req.params.id;
   const { balance } = req.body;
 
-  console.log("PUT /accounts/" + accountId + "/balance");
-
-  if (!accountId || !balance) {
-    return res.status(400).json({ error: "Malformed request" });
-  } else {
-    setAccountBalance(accountId, balance);
-
-    res.json(getAccounts());
+  if (accountId === undefined) {
+    return res.status(400).json({ error: "Missing parameter: accountId" });
   }
+
+  if (balance === undefined) {
+    return res.status(400).json({ error: "Missing field: balance" });
+  }
+
+  const parsedAccountId = parseInt(accountId, 10);
+  if (isNaN(parsedAccountId) || accountId <= 0) {
+    return res.status(400).json({ error: "Invalid accountId. Must be a positive integer." });
+  }
+
+  if (!Number.isInteger(balance) || balance <= 0) {
+    return res.status(400).json({ error: "Invalid balance. Must be a positive integer." });
+  }
+  
+  setAccountBalance(accountId, balance);
+  res.json(getAccounts());
 });
 
 // RATE endpoints
