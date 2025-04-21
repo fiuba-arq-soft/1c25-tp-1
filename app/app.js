@@ -56,6 +56,26 @@ function validatePositiveNumberFields(fields) {
   return null;
 }
 
+function evaluateFieldsForSetBalance(accountId, balance) {
+  const missingFieldError = checkRequiredFields({ balance });
+  if (missingFieldError) {
+    return missingFieldError;
+  }
+
+  const parsedAccountId = parseInt(accountId, 10);
+  const invalidAccountIdError = validatePositiveIntegerFields({ parsedAccountId });
+  if (invalidAccountIdError) {
+    return invalidAccountIdError;
+  }
+
+  const invalidBalanceError = validatePositiveNumberFields({ balance});
+  if (invalidBalanceError) {
+    return invalidBalanceError;
+  }
+
+  return null;
+}
+
 function evaluateFieldsForRate(baseCurrency, counterCurrency, rate) {
   const missingFieldError = checkRequiredFields({ baseCurrency, counterCurrency, rate });
   if (missingFieldError) {
@@ -110,21 +130,9 @@ app.put("/accounts/:id/balance", (req, res) => {
   const accountId = req.params.id;
   const { balance } = req.body;
 
-  if (accountId === undefined) {
-    return res.status(400).json({ error: "Missing parameter: accountId" });
-  }
-
-  if (balance === undefined) {
-    return res.status(400).json({ error: "Missing field: balance" });
-  }
-
-  const parsedAccountId = parseInt(accountId, 10);
-  if (isNaN(parsedAccountId) || accountId <= 0) {
-    return res.status(400).json({ error: "Invalid accountId. Must be a positive integer." });
-  }
-
-  if (!Number.isInteger(balance) || balance <= 0) {
-    return res.status(400).json({ error: "Invalid balance. Must be a positive integer." });
+  const fieldError = evaluateFieldsForSetBalance(accountId, balance)
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
   }
   
   setAccountBalance(accountId, balance);
