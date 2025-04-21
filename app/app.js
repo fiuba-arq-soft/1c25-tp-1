@@ -1,5 +1,7 @@
 import express from "express";
 
+import { getAccountById } from './state.js'
+
 import {
   init as exchangeInit,
   getAccounts,
@@ -7,6 +9,7 @@ import {
   getRates,
   setRate,
   getLog,
+  getTiers,
   exchange,
 } from "./exchange.js";
 

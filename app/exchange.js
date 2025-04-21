@@ -1,10 +1,20 @@
 import { nanoid } from "nanoid";
 
-import { init as stateInit, getAccounts as stateAccounts, getRates as stateRates, getLog as stateLog } from "./state.js";
+import { 
+  init as stateInit, 
+  getAccounts as stateAccounts,
+  getRates as stateRates, 
+  getLog as stateLog, 
+  getTiers as stateTiers 
+} from "./state.js";
 
 let accounts;
 let rates;
 let log;
+let tiers;
+
+let accountsById = new Map();
+let accountsByCurrency = new Map();
 
 //call to initialize the exchange service
 export async function init() {
@@ -13,6 +23,12 @@ export async function init() {
   accounts = stateAccounts();
   rates = stateRates();
   log = stateLog();
+  tiers = stateTiers();
+
+  for (const account of accounts) {
+    accountsById.set(account.id, account);
+    accountsByCurrency.set(account.currency, account);
+  }
 }
 
 //returns all internal accounts
@@ -37,6 +53,10 @@ export function getRates() {
 //returns the whole transaction log
 export function getLog() {
   return log;
+}
+
+export function getTiers() {
+  return tiers;
 }
 
 //sets the exchange rate for a given pair of currencies, and the reciprocal rate as well
@@ -120,21 +140,9 @@ async function transfer(fromAccountId, toAccountId, amount) {
 }
 
 function findAccountByCurrency(currency) {
-  for (let account of accounts) {
-    if (account.currency == currency) {
-      return account;
-    }
-  }
-
-  return null;
+  return accountsByCurrency.get(currency) || null;
 }
 
 function findAccountById(id) {
-  for (let account of accounts) {
-    if (account.id == id) {
-      return account;
-    }
-  }
-
-  return null;
+  return accountsById.get(id) || null;
 }
