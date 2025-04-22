@@ -1,6 +1,11 @@
 import { nanoid } from "nanoid";
 
-import { init as stateInit, getAccounts as stateAccounts, getRates as stateRates, getLog as stateLog } from "./state.js";
+import { 
+  init as stateInit, 
+  getAccounts as stateAccounts, 
+  getRates as stateRates, 
+  getLog as stateLog 
+} from "./state.js";
 
 let accounts;
 let rates;

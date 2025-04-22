@@ -12,7 +12,7 @@ import {
   updateRate as redisUpdateRate,
   getLog as redisGetLog,
   saveLog as redisSaveLog,
-} from "./state-redis.js";
+} from "./state-v2.js";
 
 // Initialize Redis-backed state
 export async function init() {
