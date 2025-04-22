@@ -1,9 +1,9 @@
 import { StatsD } from 'hot-shots';
 
 const client = new StatsD({
-  host: 'graphite',
-  port: 8125,
-  prefix: '',
+  host: 'graphite-business',
+  port: 8126,
+  prefix: 'arvault.',
   errorHandler: (err) => {
     console.error('StatsD error:', err);
   }
@@ -32,5 +32,5 @@ export function addVolumeForCurrency(currency, amount) {
 }
 
 export function addNetVolume(currency, amount) {
-  client.gauge(`volumen.neto.${currency}`, amount);
+  client.increment(`volumen.neto.${currency}`, amount);
 }
