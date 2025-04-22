@@ -18,13 +18,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "graphite",
-        "uid": "cej3vho1qk45cd"
+        "uid": "bejmzmu9090qod"
       },
       "fieldConfig": {
         "defaults": {
@@ -111,7 +111,8 @@
           "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "stats.timers.response.exchange_post_response_time.mean"
+          "target": "stats.arvault.timers.response.exchange_post_response_time.mean",
+          "textEditor": true
         },
         {
           "datasource": {
@@ -121,7 +122,8 @@
           "hide": false,
           "refCount": 0,
           "refId": "A",
-          "target": "stats.timers.response.exchange_post_response_time.mean_90"
+          "target": "stats.timers.response.exchange_post_response_time.mean_90",
+          "textEditor": true
         },
         {
           "datasource": {
@@ -160,7 +162,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "cej3vho1qk45cd"
+        "uid": "bejmzmu9090qod"
       },
       "fieldConfig": {
         "defaults": {
@@ -248,13 +250,13 @@
         {
           "refCount": 0,
           "refId": "B",
-          "target": "stats.volumen.total.ARS",
+          "target": "stats.arvault.volumen.total.ARS",
           "textEditor": true
         },
         {
           "refCount": 0,
           "refId": "C",
-          "target": "stats.volumen.total.EUR",
+          "target": "stats.arvault.volumen.total.EUR",
           "textEditor": true
         },
         {
@@ -265,7 +267,7 @@
           "hide": false,
           "refCount": 0,
           "refId": "G",
-          "target": "stats.volumen.total.BRL",
+          "target": "stats.arvault.volumen.total.BRL",
           "textEditor": true
         }
       ],
@@ -275,7 +277,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "cej3vho1qk45cd"
+        "uid": "bejmzmu9090qod"
       },
       "fieldConfig": {
         "defaults": {
@@ -357,17 +359,20 @@
         {
           "refCount": 0,
           "refId": "D",
-          "target": "stats.gauges.volumen.neto.USD"
+          "target": "stats.arvault.volumen.neto.USD",
+          "textEditor": true
         },
         {
           "refCount": 0,
           "refId": "E",
-          "target": "stats.gauges.volumen.neto.ARS"
+          "target": "stats.arvault.volumen.neto.ARS",
+          "textEditor": true
         },
         {
           "refCount": 0,
           "refId": "F",
-          "target": "stats.gauges.volumen.neto.EUR"
+          "target": "stats.arvault.volumen.neto.EUR",
+          "textEditor": true
         },
         {
           "datasource": {
@@ -377,7 +382,8 @@
           "hide": false,
           "refCount": 0,
           "refId": "H",
-          "target": "stats.gauges.volumen.neto.BRL"
+          "target": "stats.arvault.volumen.neto.BRL",
+          "textEditor": true
         }
       ],
       "title": "Volumen Neto por Moneda",
@@ -392,13 +398,13 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "TP1",
   "uid": "arxIPammk",
-  "version": 40,
+  "version": 4,
   "weekStart": ""
 }
