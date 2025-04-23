@@ -1,0 +1,152 @@
+import express from "express";
+
+import {
+    init as exchangeInit,
+    getAccounts,
+    setAccountBalance,
+    getRates,
+    setRate,
+    getLog,
+    exchange,
+} from "../exchange.js";
+
+import {
+    getStartTime,
+    registerResponseTime,
+    addVolumeForCurrency,
+    addNetVolume,
+    countSuccess,
+    countError
+} from "../utils/metrics.js";
+
+import {
+    evaluateFieldsForSetBalance,
+    evaluateFieldsForRate,
+    evaluateFieldsForExchange
+} from "../utils/validations.js";
+
+
+// -----------------------------------------------------------------------------
+// V1.1 endpoints
+
+const v11Router = express.Router();
+
+// ACCOUNTS endpoints
+// -----------------------------------------------------------
+v11Router.get("/accounts", async (req, res) => {
+    const start = getStartTime();
+  
+    console.log("GET /accounts");
+  
+    res.json(await getAccounts());
+    registerResponseTime("accounts_get_response_time", start);
+});
+  
+// -----------------------------------------------------------
+v11Router.put("/accounts/:id/balance", async (req, res) => {
+    const start = getStartTime();
+    const accountId = req.params.id;
+    const { balance } = req.body;
+  
+    console.log("PUT /accounts/" + accountId + "/balance");
+  
+    const fieldError = evaluateFieldsForSetBalance(accountId, balance);
+    if (fieldError) {
+      return res.status(400).json({ error: fieldError });
+    }
+    
+    setAccountBalance(accountId, balance);
+  
+    res.json(getAccounts());
+    registerResponseTime("accounts_put_response_time", start);
+});
+  
+// RATE endpoints
+// -----------------------------------------------------------
+v11Router.get("/rates", async (req, res) => {
+    const start = getStartTime();
+  
+    console.log("GET /rates");
+  
+    res.json(await getRates());
+    registerResponseTime("rates_get_response_time", start);
+});
+  
+// -----------------------------------------------------------
+v11Router.put("/rates", async (req, res) => {
+    const start = getStartTime();
+    const { baseCurrency, counterCurrency, rate } = req.body;
+  
+    console.log("PUT /rates");
+  
+    const fieldError = evaluateFieldsForRate(baseCurrency, counterCurrency, rate);
+    if (fieldError) {
+      return res.status(400).json({ error: fieldError });
+    }
+  
+    const newRateRequest = { ...req.body };
+    await setRate(newRateRequest);
+  
+    res.json(await getRates());
+    registerResponseTime("rates_put_response_time", start);
+});
+  
+// LOG endpoint
+// -----------------------------------------------------------
+  
+// -----------------------------------------------------------
+v11Router.get("/log", async (req, res) => {
+    const start = getStartTime();
+    
+    console.log("GET /log");
+  
+    res.json(await getLog());
+    registerResponseTime("log_get_response_time", start);
+});
+  
+  
+// EXCHANGE endpoint
+// -----------------------------------------------------------
+  
+// -----------------------------------------------------------
+v11Router.post("/exchange", async (req, res) => {
+    const start = getStartTime();
+    const {
+      baseCurrency,
+      counterCurrency,
+      baseAccountId,
+      counterAccountId,
+      baseAmount,
+    } = req.body;
+  
+    console.log("POST /exchange");
+  
+    const fieldError = evaluateFieldsForExchange(baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount);
+    if (fieldError) {
+      countError("exchange");
+      registerResponseTime("exchange_post_response_time", start);
+      return res.status(400).json({ error: fieldError });
+    }
+  
+    const exchangeRequest = { ...req.body };
+    const exchangeResult = await exchange(exchangeRequest);
+    const counterAmount = exchangeResult.counterAmount;
+  
+    addVolumeForCurrency(baseCurrency, baseAmount);
+    addVolumeForCurrency(counterCurrency, counterAmount);
+    
+    addNetVolume(baseCurrency, -baseAmount);
+    addNetVolume(counterCurrency, counterAmount);
+  
+    if (exchangeResult.ok) {
+      countSuccess("exchange");
+      registerResponseTime("exchange_post_response_time", start);
+      res.status(200).json(exchangeResult);
+    } else {
+      countError("exchange");
+      registerResponseTime("exchange_post_response_time", start);
+      res.status(500).json(exchangeResult);
+    }
+});
+
+export default v11Router;

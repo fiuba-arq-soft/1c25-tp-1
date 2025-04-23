@@ -1,4 +1,24 @@
 import express from "express";
+import v1Router from "./routers/v1Router.js";
+import v11Router from "./routers/v11Router.js";
+import v2Router from "./routers/v2Router.js";
+
+/*
+import {
+  getStartTime,
+  registerResponseTime,
+  addVolumeForCurrency,
+  addNetVolume,
+  countSuccess,
+  countError
+} from "./metrics.js";
+
+import {
+  evaluateFieldsForAccount,
+  evaluateFieldsForSetBalance,
+  evaluateFieldsForRate,
+  evaluateFieldsForExchange
+} from "./validations.js";
 
 import {
   init as exchangeInit,
@@ -10,167 +30,109 @@ import {
   exchange,
 } from "./exchange.js";
 
-await exchangeInit();
+import {
+  init as exchangeInitV2,
+  getAccounts as getAccountsV2,
+  createAccount as createAccountV2, // only in v2
+  setAccountBalance as setAccountBalanceV2,
+  getRates as getRatesV2,
+  setRate as setRateV2,
+  getLog as getLogV2,
+  exchange as exchangeV2,
+} from "./exchange-v2.js";
+*/
+
+//await exchangeInit();
 
 const app = express();
 const port = 3000;
 
+// Version 1 (original)
+//const v1Router = require('./routes/v1Router');
+
+// Version 1.1 (original + validations)
+//const v11Router = require('./routes/v11Router');
+
+// Version 2 (with redis)
+//const v2Router = require('./routes/v2Router');
+
 app.use(express.json());
 
-function checkRequiredFields(fields) {
-  for (const [key, value] of Object.entries(fields)) {
-    if (value === undefined) {
-      return `Missing field: ${key}`;
-    }
-  }
+// Register routes
+app.use('/', v1Router); // default route for original v1Router
+app.use('/v1', v1Router); // original v1Router
+app.use('/v1.1', v11Router); // original + validations Router
+app.use('/v2', v2Router); // redis implementation Router
 
-  return null;
-}
+/*
+// -----------------------------------------------------------------------------
+// V1 endpoints
 
-function validateCorrectCurrencyFormats(currencies) {
-  for (const [key, value] of Object.entries(currencies)) {
-    if (typeof value !== "string" || value.length !== 3) {
-      return `Invalid ${key}: must be a 3-character string`;
-    }
-  }
-
-  return null;
-}
-
-function validatePositiveIntegerFields(fields) {
-  for (const [key, value] of Object.entries(fields)) {
-    if (!Number.isInteger(value) || value <= 0) {
-      return `Invalid ${key}. Must be a positive integer.`;
-    }
-  }
-
-  return null;
-}
-
-function validatePositiveNumberFields(fields) {
-  for (const [key, value] of Object.entries(fields)) {
-    if (typeof value !== "number" || value <= 0) {
-      return `Invalid ${key}. Must be a positive number.`;
-    }
-  }
-  return null;
-}
-
-function evaluateFieldsForSetBalance(accountId, balance) {
-  const missingFieldError = checkRequiredFields({ balance });
-  if (missingFieldError) {
-    return missingFieldError;
-  }
-
-  const parsedAccountId = parseInt(accountId, 10);
-  const invalidAccountIdError = validatePositiveIntegerFields({ parsedAccountId });
-  if (invalidAccountIdError) {
-    return invalidAccountIdError;
-  }
-
-  const invalidBalanceError = validatePositiveNumberFields({ balance});
-  if (invalidBalanceError) {
-    return invalidBalanceError;
-  }
-
-  return null;
-}
-
-function evaluateFieldsForRate(baseCurrency, counterCurrency, rate) {
-  const missingFieldError = checkRequiredFields({ baseCurrency, counterCurrency, rate });
-  if (missingFieldError) {
-    return missingFieldError;
-  }
-
-  const invalidCurrencyFormatError = validateCorrectCurrencyFormats({ baseCurrency, counterCurrency });
-  if (invalidCurrencyFormatError) {
-    return invalidCurrencyFormatError;
-  }
-
-  const invalidRateError = validatePositiveIntegerFields({ rate });
-  if (invalidRateError) {
-    return invalidRateError;
-  }
-
-  return null;
-}
-
-function evaluateFieldsForExchange(baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount) {
-  const missingFieldError = checkRequiredFields({ baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount });
-  if (missingFieldError) {
-    return missingFieldError;
-  }
-
-  const invalidCurrencyFormatError = validateCorrectCurrencyFormats({ baseCurrency, counterCurrency });
-  if (invalidCurrencyFormatError) {
-    return invalidCurrencyFormatError;
-  }
-
-  const invalidAccountsIdError = validatePositiveIntegerFields({ baseAccountId, counterAccountId });
-  if (invalidAccountsIdError) {
-    return invalidAccountsIdError;
-  }
-
-  const invalidAmountError = validatePositiveNumberFields({ baseAmount });
-  if (invalidAmountError) {
-    return invalidAmountError;
-  }
-
-  return null;
-}
-
-// ACCOUNT endpoints
-
-app.get("/accounts", (_, res) => {
-  console.log("GET /accounts");
-  res.json(getAccounts());
+// ACCOUNTS endpoints
+// -----------------------------------------------------------
+v1Router.get("/accounts", async (req, res) => {
+  const start = getStartTime();
+  res.json(await getAccounts());
+  registerResponseTime("accounts_get_response_time", start);
 });
 
-app.put("/accounts/:id/balance", (req, res) => {
+// -----------------------------------------------------------
+v1Router.put("/accounts/:id/balance", async (req, res) => {
+  const start = getStartTime();
   const accountId = req.params.id;
   const { balance } = req.body;
 
-  const fieldError = evaluateFieldsForSetBalance(accountId, balance)
-  if (fieldError) {
-    return res.status(400).json({ error: fieldError });
+  if (!accountId || !balance) {
+    return res.status(400).json({ error: "Malformed request" });
+  } else {
+    await setAccountBalance(accountId, balance);
+
+    res.json(await getAccounts());
+    registerResponseTime("accounts_put_response_time", start);
   }
-  
-  setAccountBalance(accountId, balance);
-  res.json(getAccounts());
 });
 
 // RATE endpoints
-
-app.get("/rates", (_, res) => {
-  console.log("GET /rates");
-  res.json(getRates());
+// -----------------------------------------------------------
+v1Router.get("/rates", async (req, res) => {
+  const start = getStartTime();
+  res.json(await getRates());
+  registerResponseTime("rates_get_response_time", start);
 });
 
-app.put("/rates", (req, res) => {
+// -----------------------------------------------------------
+v1Router.put("/rates", async (req, res) => {
+  const start = getStartTime();
   const { baseCurrency, counterCurrency, rate } = req.body;
 
-  const fieldError = evaluateFieldsForRate(baseCurrency, counterCurrency, rate);
-  if (fieldError) {
-    return res.status(400).json({ error: fieldError });
+  if (!baseCurrency || !counterCurrency || !rate) {
+    return res.status(400).json({ error: "Malformed request" });
   }
 
   const newRateRequest = { ...req.body };
-  setRate(newRateRequest);
+  await setRate(newRateRequest);
 
-  res.json(getRates());
+  res.json(await getRates());
+  registerResponseTime("rates_put_response_time", start);
 });
 
 // LOG endpoint
+// -----------------------------------------------------------
 
-app.get("/log", (_, res) => {
-  console.log("GET /log");
-
-  res.json(getLog());
+// -----------------------------------------------------------
+v1Router.get("/log", async (req, res) => {
+  const start = getStartTime();
+  res.json(await getLog());
+  registerResponseTime("log_get_response_time", start);
 });
 
-// EXCHANGE endpoint
 
-app.post("/exchange", async (req, res) => {
+// EXCHANGE endpoint
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v1Router.post("/exchange", async (req, res) => {
+  const start = getStartTime();
   const {
     baseCurrency,
     counterCurrency,
@@ -179,20 +141,311 @@ app.post("/exchange", async (req, res) => {
     baseAmount,
   } = req.body;
 
+
+  if (
+    !baseCurrency ||
+    !counterCurrency ||
+    !baseAccountId ||
+    !counterAccountId ||
+    !baseAmount
+  ) {
+    countError("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    return res.status(400).json({ error: "Malformed request" });
+  }
+
+  const exchangeRequest = { ...req.body };
+  const exchangeResult = await exchange(exchangeRequest);
+  const counterAmount = exchangeResult.counterAmount;
+
+  addVolumeForCurrency(baseCurrency, baseAmount);
+  addVolumeForCurrency(counterCurrency, counterAmount);
+  
+  addNetVolume(baseCurrency, -baseAmount);
+  addNetVolume(counterCurrency, counterAmount);
+
+  if (exchangeResult.ok) {
+    countSuccess("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    res.status(200).json(exchangeResult);
+  } else {
+    countError("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    res.status(500).json(exchangeResult);
+  }
+});
+
+
+// -----------------------------------------------------------------------------
+// V1.1 endpoints
+
+// ACCOUNTS endpoints
+// -----------------------------------------------------------
+v11Router.get("/accounts", async (req, res) => {
+  const start = getStartTime();
+
+  console.log("GET /accounts");
+
+  res.json(await getAccounts());
+  registerResponseTime("accounts_get_response_time", start);
+});
+
+// -----------------------------------------------------------
+v11Router.put("/accounts/:id/balance", async (req, res) => {
+  const start = getStartTime();
+  const accountId = req.params.id;
+  const { balance } = req.body;
+
+  console.log("PUT /accounts/" + accountId + "/balance");
+
+  const fieldError = evaluateFieldsForSetBalance(accountId, balance);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
+  }
+  
+  setAccountBalance(accountId, balance);
+
+  res.json(getAccounts());
+  registerResponseTime("accounts_put_response_time", start);
+});
+
+// RATE endpoints
+// -----------------------------------------------------------
+v11Router.get("/rates", async (req, res) => {
+  const start = getStartTime();
+
+  console.log("GET /rates");
+
+  res.json(await getRates());
+  registerResponseTime("rates_get_response_time", start);
+});
+
+// -----------------------------------------------------------
+v11Router.put("/rates", async (req, res) => {
+  const start = getStartTime();
+  const { baseCurrency, counterCurrency, rate } = req.body;
+
+  console.log("PUT /rates");
+
+  const fieldError = evaluateFieldsForRate(baseCurrency, counterCurrency, rate);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
+  }
+
+  const newRateRequest = { ...req.body };
+  await setRate(newRateRequest);
+
+  res.json(await getRates());
+  registerResponseTime("rates_put_response_time", start);
+});
+
+// LOG endpoint
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v11Router.get("/log", async (req, res) => {
+  const start = getStartTime();
+  
+  console.log("GET /log");
+
+  res.json(await getLog());
+  registerResponseTime("log_get_response_time", start);
+});
+
+
+// EXCHANGE endpoint
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v11Router.post("/exchange", async (req, res) => {
+  const start = getStartTime();
+  const {
+    baseCurrency,
+    counterCurrency,
+    baseAccountId,
+    counterAccountId,
+    baseAmount,
+  } = req.body;
+
+  console.log("POST /exchange");
+
   const fieldError = evaluateFieldsForExchange(baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount);
   if (fieldError) {
+    countError("exchange");
+    registerResponseTime("exchange_post_response_time", start);
     return res.status(400).json({ error: fieldError });
   }
 
   const exchangeRequest = { ...req.body };
   const exchangeResult = await exchange(exchangeRequest);
+  const counterAmount = exchangeResult.counterAmount;
+
+  addVolumeForCurrency(baseCurrency, baseAmount);
+  addVolumeForCurrency(counterCurrency, counterAmount);
+  
+  addNetVolume(baseCurrency, -baseAmount);
+  addNetVolume(counterCurrency, counterAmount);
 
   if (exchangeResult.ok) {
-    res.status(200).json('Currency exchange completed.');
+    countSuccess("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    res.status(200).json(exchangeResult);
   } else {
-    res.status(500).json('An error occurred while processing the exchange.');
+    countError("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    res.status(500).json(exchangeResult);
   }
 });
+
+
+// -----------------------------------------------------------------------------
+// V2 endpoints
+// -----------------------------------------------------------------------------
+
+// ACCOUNTS endpoints
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v2Router.get("/accounts", async (req, res) => {
+  const start = getStartTime();
+
+  console.log("GET /accounts (V2)");
+
+  res.json(await getAccountsV2());
+  registerResponseTime("accounts_get_response_time", start);
+});
+
+// -----------------------------------------------------------
+v2Router.post("/accounts", async (req, res) => {
+  const start = getStartTime();
+  const { id, currency, balance } = req.body;
+
+  console.log("POST /accounts (V2)");  
+
+  const fieldError = evaluateFieldsForAccount(id, currency, balance);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
+  } else {
+    createAccountV2(id, currency, balance);
+
+    res.json(await getAccountsV2());
+    registerResponseTime("accounts_post_response_time", start);
+  }
+});
+
+// -----------------------------------------------------------
+v2Router.put("/accounts/:id/balance", async (req, res) => {
+  const start = getStartTime();
+  const accountId = req.params.id;
+  const { balance } = req.body;
+
+  console.log("PUT /accounts/" + accountId + "/balance (V2)");
+
+  const fieldError = evaluateFieldsForSetBalance(accountId, balance);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
+  } else {
+    await setAccountBalanceV2(accountId, balance);
+
+    res.json(await getAccountsV2());
+    registerResponseTime("accounts_put_response_time", start);
+  }
+});
+
+
+// RATE endpoints
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v2Router.get("/rates", async (req, res) => {
+  const start = getStartTime();
+
+  console.log("GET /rates (V2)");
+
+  res.json(await getRatesV2());
+  registerResponseTime("rates_get_response_time", start);
+});
+
+// -----------------------------------------------------------
+v2Router.put("/rates", async (req, res) => {
+  const start = getStartTime();
+  const { baseCurrency, counterCurrency, rate } = req.body;
+
+  console.log("PUT /rates (V2)");
+
+  const fieldError = evaluateFieldsForRate(baseCurrency, counterCurrency, rate);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
+  }
+
+  const newRateRequest = { ...req.body };
+  await setRateV2(newRateRequest);
+
+  res.json(await getRatesV2());
+  registerResponseTime("rates_put_response_time", start);
+});
+
+
+// LOG endpoint
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v2Router.get("/log", async (req, res) => {
+  const start = getStartTime();
+
+  console.log("GET /log (V2)");
+
+  res.json(await getLogV2());
+  registerResponseTime("log_get_response_time", start);
+});
+
+
+// EXCHANGE endpoint
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v2Router.post("/exchange", async (req, res) => {
+  const start = getStartTime();
+  const {
+    baseCurrency,
+    counterCurrency,
+    baseAccountId,
+    counterAccountId,
+    baseAmount,
+  } = req.body;
+
+  console.log("POST /exchange (V2)");
+
+  const fieldError = evaluateFieldsForExchange(baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount);
+  if (fieldError) {
+    countError("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    return res.status(400).json({ error: fieldError });
+  }
+
+  const exchangeRequest = { ...req.body };
+  const exchangeResult = await exchange(exchangeRequest);
+  const counterAmount = exchangeResult.counterAmount;
+
+  addVolumeForCurrency(baseCurrency, baseAmount);
+  addVolumeForCurrency(counterCurrency, counterAmount);
+  
+  addNetVolume(baseCurrency, -baseAmount);
+  addNetVolume(counterCurrency, counterAmount);
+
+  if (exchangeResult.ok) {
+    countSuccess("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    res.status(200).json(exchangeResult);
+  } else {
+    countError("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    res.status(500).json(exchangeResult);
+  }
+});
+*/
+
+// -----------------------------------------------------------------------------
 
 app.listen(port, () => {
   console.log(`Exchange API listening on port ${port}`);
