@@ -34,6 +34,13 @@ services:
             - "/sys:/sys:ro"
             - "/var/lib/docker/:/var/lib/docker:ro"
 
+    redis:
+        image: redis:7.0.12
+        ports:
+            - "6379:6379"
+        volumes:
+            - ./redis_data:/data
+
     graphite-business:
         image: graphiteapp/graphite-statsd:1.1.10-5
         ports:
@@ -49,7 +56,6 @@ services:
             - "8125:8125/udp"
         volumes:
             - ./statsd-infra.config.json:/opt/statsd/config/udp.js
-
 
 volumes:
     grafana_config:
