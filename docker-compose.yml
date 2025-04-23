@@ -14,16 +14,6 @@ services:
         depends_on:
             - api
 
-    graphite:
-        image: graphiteapp/graphite-statsd:1.1.10-5
-        volumes:
-            - ./statsd.config.json:/opt/statsd/config/udp.js
-            - ./graphite.storage-schemas.conf:/opt/graphite/conf/storage-schemas.conf
-        ports:
-            - "8090:80"
-            - "8125:8125/udp"
-            - "8126:8126"
-
     grafana:
         image: grafana/grafana:11.5.2
         ports:
@@ -34,8 +24,8 @@ services:
     cadvisor:
         image: gcr.io/cadvisor/cadvisor:v0.49.2
         links:
-            - graphite
-        command: -storage_driver="statsd" -storage_driver_host="graphite:8125" -storage_driver_db="cadvisor" -storage_driver_buffer_duration="1s" --docker_only=true
+            - graphite-infra
+        command: -storage_driver="statsd" -storage_driver_host="graphite-infra:8125" -storage_driver_db="cadvisor" --docker_only=true
         ports:
             - "8080:8080"
         volumes:
@@ -51,6 +41,25 @@ services:
         volumes:
             - ./redis_data:/data
 
+    graphite-business:
+        image: graphiteapp/graphite-statsd:1.1.10-5
+        ports:
+            - "8090:80"
+            - "8126:8126/udp"
+        volumes:
+            - ./statsd-business.config.json:/opt/statsd/config/udp.js
+
+    graphite-infra:
+        image: graphiteapp/graphite-statsd:1.1.10-5
+        ports:
+            - "8091:80"
+            - "8125:8125/udp"
+        volumes:
+            - ./statsd-infra.config.json:/opt/statsd/config/udp.js
+
 volumes:
     grafana_config:
         driver: local
+
+
+    
