@@ -90,6 +90,53 @@ v1Router.put("/accounts/:id/balance", async (req, res) => {
     res.json(await getAccounts());
     registerResponseTime("accounts_put_response_time", start);
   }
+
+  if (toAccountId === undefined) {
+    return res.status(400).json({ error: "Missing field: toAccountId" });
+  }
+
+  if (amount === undefined) {
+    return res.status(400).json({ error: "Missing field: amount" });
+
+  }
+
+  if (!Number.isInteger(fromAccountId) || fromAccountId <= 0) {
+    return res.status(400).json({ error: "Invalid fromAccountId. Must be a positive integer." });
+  }
+
+  if (!Number.isInteger(toAccountId) || toAccountId <= 0) {
+    return res.status(400).json({ error: "Invalid toAccountId. Must be a positive integer." });
+  }
+
+  if (typeof amount !== "number" || amount <= 0) {
+    return res.status(400).json({ error: "Invalid amount. Must be a positive number." });
+  }
+
+  const accounts = getAccounts();
+  const fromAccount = accounts.find(acc => acc.id === fromAccountId);
+  const toAccount = accounts.find(acc => acc.id === toAccountId);
+
+  if (!fromAccount || !toAccount) {
+    return res.status(404).json({ error: "One or both accounts not found." });
+  }
+
+  if (fromAccount.currency !== toAccount.currency) {
+    return res.status(400).json({ error: "Accounts must have the same currency" });
+  }
+
+  if (fromAccount.balance < amount) {
+    return res.status(400).json({ error: "Insufficient funds in source account." });
+  }
+
+  setAccountBalance(fromAccountId, fromAccount.balance - amount);
+  setAccountBalance(toAccountId, toAccount.balance + amount);
+
+  res.status(200).json({
+    message: "Transfer completed successfully",
+    fromAccountId,
+    toAccountId,
+    amount
+  });
 });
 
 // RATE endpoints

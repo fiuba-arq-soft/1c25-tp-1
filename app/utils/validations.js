@@ -74,6 +74,25 @@ export function evaluateFieldsForAccount(accountId, currency, balance) {
 
     return null;
 }
+
+export function evaluateFieldsForTransfer(fromAccountId, toAccountId, amount) {
+  const missingFieldError = checkRequiredFields({ fromAccountId, toAccountId, amount });
+  if (missingFieldError) {
+    return missingFieldError;
+  }
+
+  const invalidAccountIdsError = validatePositiveIntegerFields({ fromAccountId, toAccountId });
+  if (invalidAccountIdsError) {
+    return invalidAccountIdsError;
+  }
+
+  const invalidAmountError = validatePositiveNumberFields({ amount });
+  if (invalidAmountError) {
+    return invalidAmountError;
+  }
+
+  return null;
+}
   
 export function evaluateFieldsForSetBalance(accountId, balance) {
     const missingFieldError = checkRequiredFields({ balance });

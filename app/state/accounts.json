@@ -2,7 +2,7 @@
   {
     "id": 1,
     "currency": "ARS",
-    "balance": 120000000
+    "balance": 4000
   },
   {
     "id": 2,
@@ -18,5 +18,10 @@
     "id": 4,
     "currency": "BRL",
     "balance": 60000
+  },
+  {
+    "id": 5,
+    "currency": "ARS",
+    "balance": 3000
   }
 ]

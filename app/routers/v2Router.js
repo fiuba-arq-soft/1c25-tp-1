@@ -53,13 +53,70 @@ v2Router.post("/accounts", async (req, res) => {
       registerResponseTime("accounts_post_response_time", start);
     }
 });
-  
+
+// -----------------------------------------------------------
+v2Router.post("/transfer", async (req, res) => {
+  const start = getStartTime();
+  const { fromAccountId, toAccountId, amount } = req.body;
+  console.log("POST /transfer (V2)");
+
+  if (fromAccountId === undefined) {
+    return res.status(400).json({ error: "Missing field: fromAccountId" });
+  }
+
+  if (toAccountId === undefined) {
+    return res.status(400).json({ error: "Missing field: toAccountId" });
+  }
+
+  if (amount === undefined) {
+    return res.status(400).json({ error: "Missing field: amount" });
+  }
+
+  if (!Number.isInteger(fromAccountId) || fromAccountId <= 0) {
+    return res.status(400).json({ error: "Invalid fromAccountId. Must be a positive integer." });
+  }
+
+  if (!Number.isInteger(toAccountId) || toAccountId <= 0) {
+    return res.status(400).json({ error: "Invalid toAccountId. Must be a positive integer." });
+  }
+
+  if (typeof amount !== "number" || amount <= 0) {
+    return res.status(400).json({ error: "Invalid amount. Must be a positive number." });
+  }
+
+  const accounts = await getAccountsV2();
+  const fromAccount = accounts.find(acc => acc.id === fromAccountId);
+  const toAccount = accounts.find(acc => acc.id === toAccountId);
+
+  if (!fromAccount || !toAccount) {
+    return res.status(404).json({ error: "One or both accounts not found." });
+  }
+
+  if (fromAccount.currency !== toAccount.currency) {
+    return res.status(400).json({ error: "Accounts must have the same currency" });
+  }
+
+  if (fromAccount.balance < amount) {
+    return res.status(400).json({ error: "Insufficient funds in source account." });
+  }
+
+  await setAccountBalanceV2(fromAccountId, fromAccount.balance - amount);
+  await setAccountBalanceV2(toAccountId, toAccount.balance + amount);
+
+  res.status(200).json({
+    message: "Transfer completed successfully",
+    fromAccountId,
+    toAccountId,
+    amount
+  });
+  registerResponseTime("accounts_transfer_response_time", start);
+});
+
 // -----------------------------------------------------------
 v2Router.put("/accounts/:id/balance", async (req, res) => {
     const start = getStartTime();
     const accountId = req.params.id;
     const { balance } = req.body;
-  
     console.log("PUT /accounts/" + accountId + "/balance (V2)");
   
     if (!accountId || !balance) {
@@ -88,7 +145,6 @@ v2Router.get("/rates", async (req, res) => {
 v2Router.put("/rates", async (req, res) => {
     const start = getStartTime();
     const { baseCurrency, counterCurrency, rate } = req.body;
-  
     console.log("PUT /rates (V2)");
   
     if (!baseCurrency || !counterCurrency || !rate) {
