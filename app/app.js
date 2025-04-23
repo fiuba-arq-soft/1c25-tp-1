@@ -1,4 +1,9 @@
 import express from "express";
+import v1Router from "./routers/v1Router.js";
+import v11Router from "./routers/v11Router.js";
+import v2Router from "./routers/v2Router.js";
+
+/*
 import {
   getStartTime,
   registerResponseTime,
@@ -7,6 +12,13 @@ import {
   countSuccess,
   countError
 } from "./metrics.js";
+
+import {
+  evaluateFieldsForAccount,
+  evaluateFieldsForSetBalance,
+  evaluateFieldsForRate,
+  evaluateFieldsForExchange
+} from "./validations.js";
 
 import {
   init as exchangeInit,
@@ -28,26 +40,31 @@ import {
   getLog as getLogV2,
   exchange as exchangeV2,
 } from "./exchange-v2.js";
+*/
 
-
-await exchangeInit();
+//await exchangeInit();
 
 const app = express();
 const port = 3000;
 
 // Version 1 (original)
-const v1Router = express.Router();
+//const v1Router = require('./routes/v1Router');
+
+// Version 1.1 (original + validations)
+//const v11Router = require('./routes/v11Router');
 
 // Version 2 (with redis)
-const v2Router = express.Router();
+//const v2Router = require('./routes/v2Router');
 
 app.use(express.json());
 
 // Register routes
 app.use('/', v1Router); // default route for original v1Router
-app.use('/v1', v1Router);
-app.use('/v2', v2Router);
+app.use('/v1', v1Router); // original v1Router
+app.use('/v1.1', v11Router); // original + validations Router
+app.use('/v2', v2Router); // redis implementation Router
 
+/*
 // -----------------------------------------------------------------------------
 // V1 endpoints
 
@@ -158,6 +175,129 @@ v1Router.post("/exchange", async (req, res) => {
   }
 });
 
+
+// -----------------------------------------------------------------------------
+// V1.1 endpoints
+
+// ACCOUNTS endpoints
+// -----------------------------------------------------------
+v11Router.get("/accounts", async (req, res) => {
+  const start = getStartTime();
+
+  console.log("GET /accounts");
+
+  res.json(await getAccounts());
+  registerResponseTime("accounts_get_response_time", start);
+});
+
+// -----------------------------------------------------------
+v11Router.put("/accounts/:id/balance", async (req, res) => {
+  const start = getStartTime();
+  const accountId = req.params.id;
+  const { balance } = req.body;
+
+  console.log("PUT /accounts/" + accountId + "/balance");
+
+  const fieldError = evaluateFieldsForSetBalance(accountId, balance);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
+  }
+  
+  setAccountBalance(accountId, balance);
+
+  res.json(getAccounts());
+  registerResponseTime("accounts_put_response_time", start);
+});
+
+// RATE endpoints
+// -----------------------------------------------------------
+v11Router.get("/rates", async (req, res) => {
+  const start = getStartTime();
+
+  console.log("GET /rates");
+
+  res.json(await getRates());
+  registerResponseTime("rates_get_response_time", start);
+});
+
+// -----------------------------------------------------------
+v11Router.put("/rates", async (req, res) => {
+  const start = getStartTime();
+  const { baseCurrency, counterCurrency, rate } = req.body;
+
+  console.log("PUT /rates");
+
+  const fieldError = evaluateFieldsForRate(baseCurrency, counterCurrency, rate);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
+  }
+
+  const newRateRequest = { ...req.body };
+  await setRate(newRateRequest);
+
+  res.json(await getRates());
+  registerResponseTime("rates_put_response_time", start);
+});
+
+// LOG endpoint
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v11Router.get("/log", async (req, res) => {
+  const start = getStartTime();
+  
+  console.log("GET /log");
+
+  res.json(await getLog());
+  registerResponseTime("log_get_response_time", start);
+});
+
+
+// EXCHANGE endpoint
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v11Router.post("/exchange", async (req, res) => {
+  const start = getStartTime();
+  const {
+    baseCurrency,
+    counterCurrency,
+    baseAccountId,
+    counterAccountId,
+    baseAmount,
+  } = req.body;
+
+  console.log("POST /exchange");
+
+  const fieldError = evaluateFieldsForExchange(baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount);
+  if (fieldError) {
+    countError("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    return res.status(400).json({ error: fieldError });
+  }
+
+  const exchangeRequest = { ...req.body };
+  const exchangeResult = await exchange(exchangeRequest);
+  const counterAmount = exchangeResult.counterAmount;
+
+  addVolumeForCurrency(baseCurrency, baseAmount);
+  addVolumeForCurrency(counterCurrency, counterAmount);
+  
+  addNetVolume(baseCurrency, -baseAmount);
+  addNetVolume(counterCurrency, counterAmount);
+
+  if (exchangeResult.ok) {
+    countSuccess("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    res.status(200).json(exchangeResult);
+  } else {
+    countError("exchange");
+    registerResponseTime("exchange_post_response_time", start);
+    res.status(500).json(exchangeResult);
+  }
+});
+
+
 // -----------------------------------------------------------------------------
 // V2 endpoints
 // -----------------------------------------------------------------------------
@@ -168,7 +308,9 @@ v1Router.post("/exchange", async (req, res) => {
 // -----------------------------------------------------------
 v2Router.get("/accounts", async (req, res) => {
   const start = getStartTime();
+
   console.log("GET /accounts (V2)");
+
   res.json(await getAccountsV2());
   registerResponseTime("accounts_get_response_time", start);
 });
@@ -177,10 +319,12 @@ v2Router.get("/accounts", async (req, res) => {
 v2Router.post("/accounts", async (req, res) => {
   const start = getStartTime();
   const { id, currency, balance } = req.body;
+
   console.log("POST /accounts (V2)");  
 
-  if (!id || !currency || !balance) {
-    return res.status(400).json({ error: "Malformed request" });
+  const fieldError = evaluateFieldsForAccount(id, currency, balance);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
   } else {
     createAccountV2(id, currency, balance);
 
@@ -197,8 +341,9 @@ v2Router.put("/accounts/:id/balance", async (req, res) => {
 
   console.log("PUT /accounts/" + accountId + "/balance (V2)");
 
-  if (!accountId || !balance) {
-    return res.status(400).json({ error: "Malformed request" });
+  const fieldError = evaluateFieldsForSetBalance(accountId, balance);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
   } else {
     await setAccountBalanceV2(accountId, balance);
 
@@ -214,7 +359,9 @@ v2Router.put("/accounts/:id/balance", async (req, res) => {
 // -----------------------------------------------------------
 v2Router.get("/rates", async (req, res) => {
   const start = getStartTime();
+
   console.log("GET /rates (V2)");
+
   res.json(await getRatesV2());
   registerResponseTime("rates_get_response_time", start);
 });
@@ -226,8 +373,9 @@ v2Router.put("/rates", async (req, res) => {
 
   console.log("PUT /rates (V2)");
 
-  if (!baseCurrency || !counterCurrency || !rate) {
-    return res.status(400).json({ error: "Malformed request" });
+  const fieldError = evaluateFieldsForRate(baseCurrency, counterCurrency, rate);
+  if (fieldError) {
+    return res.status(400).json({ error: fieldError });
   }
 
   const newRateRequest = { ...req.body };
@@ -244,6 +392,7 @@ v2Router.put("/rates", async (req, res) => {
 // -----------------------------------------------------------
 v2Router.get("/log", async (req, res) => {
   const start = getStartTime();
+
   console.log("GET /log (V2)");
 
   res.json(await getLogV2());
@@ -267,20 +416,22 @@ v2Router.post("/exchange", async (req, res) => {
 
   console.log("POST /exchange (V2)");
 
-  if (
-    !baseCurrency ||
-    !counterCurrency ||
-    !baseAccountId ||
-    !counterAccountId ||
-    !baseAmount
-  ) {
+  const fieldError = evaluateFieldsForExchange(baseCurrency, counterCurrency, baseAccountId, counterAccountId, baseAmount);
+  if (fieldError) {
     countError("exchange");
     registerResponseTime("exchange_post_response_time", start);
-    return res.status(400).json({ error: "Malformed request" });
+    return res.status(400).json({ error: fieldError });
   }
 
   const exchangeRequest = { ...req.body };
-  const exchangeResult = await exchangeV2(exchangeRequest);
+  const exchangeResult = await exchange(exchangeRequest);
+  const counterAmount = exchangeResult.counterAmount;
+
+  addVolumeForCurrency(baseCurrency, baseAmount);
+  addVolumeForCurrency(counterCurrency, counterAmount);
+  
+  addNetVolume(baseCurrency, -baseAmount);
+  addNetVolume(counterCurrency, counterAmount);
 
   if (exchangeResult.ok) {
     countSuccess("exchange");
@@ -292,7 +443,7 @@ v2Router.post("/exchange", async (req, res) => {
     res.status(500).json(exchangeResult);
   }
 });
-
+*/
 
 // -----------------------------------------------------------------------------
 
