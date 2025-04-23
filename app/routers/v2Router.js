@@ -1,0 +1,253 @@
+import express from "express";
+
+import {
+    init as exchangeInitV2,
+    getAccounts as getAccountsV2,
+    createAccount as createAccountV2, // only in v2
+    setAccountBalance as setAccountBalanceV2,
+    getTiers as getTiersV2,
+    createTier as createTierV2,
+    getRates as getRatesV2,
+    setRate as setRateV2,
+    getLog as getLogV2,
+    exchange as exchangeV2,
+} from "../exchange-v2.js";
+
+import {
+    getStartTime,
+    registerResponseTime,
+    addVolumeForCurrency,
+    addNetVolume,
+    countSuccess,
+    countError
+} from "../utils/metrics.js";
+
+// -----------------------------------------------------------------------------
+// V2 endpoints
+// -----------------------------------------------------------------------------
+
+const v2Router = express.Router();
+
+// ACCOUNTS endpoints
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v2Router.get("/accounts", async (req, res) => {
+    const start = getStartTime();
+    console.log("GET /accounts (V2)");
+    res.json(await getAccountsV2());
+    registerResponseTime("accounts_get_response_time", start);
+});
+  
+// -----------------------------------------------------------
+v2Router.post("/accounts", async (req, res) => {
+    console.log(req.body);
+    const start = getStartTime();
+    const { id, currency, balance } = req.body;
+    console.log("POST /accounts (V2)");  
+  
+    if (!id || !currency || !balance) {
+      return res.status(400).json({ error: "Malformed request" });
+    } else {
+      createAccountV2(id, currency, balance);
+  
+      res.json(await getAccountsV2());
+      registerResponseTime("accounts_post_response_time", start);
+    }
+});
+
+// -----------------------------------------------------------
+v2Router.post("/transfer", async (req, res) => {
+  const start = getStartTime();
+  const { fromAccountId, toAccountId, amount } = req.body;
+  console.log("POST /transfer (V2)");
+
+  if (fromAccountId === undefined) {
+    return res.status(400).json({ error: "Missing field: fromAccountId" });
+  }
+
+  if (toAccountId === undefined) {
+    return res.status(400).json({ error: "Missing field: toAccountId" });
+  }
+
+  if (amount === undefined) {
+    return res.status(400).json({ error: "Missing field: amount" });
+  }
+
+  if (!Number.isInteger(fromAccountId) || fromAccountId <= 0) {
+    return res.status(400).json({ error: "Invalid fromAccountId. Must be a positive integer." });
+  }
+
+  if (!Number.isInteger(toAccountId) || toAccountId <= 0) {
+    return res.status(400).json({ error: "Invalid toAccountId. Must be a positive integer." });
+  }
+
+  if (typeof amount !== "number" || amount <= 0) {
+    return res.status(400).json({ error: "Invalid amount. Must be a positive number." });
+  }
+
+  const accounts = await getAccountsV2();
+  const fromAccount = accounts.find(acc => acc.id === fromAccountId);
+  const toAccount = accounts.find(acc => acc.id === toAccountId);
+
+  if (!fromAccount || !toAccount) {
+    return res.status(404).json({ error: "One or both accounts not found." });
+  }
+
+  if (fromAccount.currency !== toAccount.currency) {
+    return res.status(400).json({ error: "Accounts must have the same currency" });
+  }
+
+  if (fromAccount.balance < amount) {
+    return res.status(400).json({ error: "Insufficient funds in source account." });
+  }
+
+  await setAccountBalanceV2(fromAccountId, fromAccount.balance - amount);
+  await setAccountBalanceV2(toAccountId, toAccount.balance + amount);
+
+  res.status(200).json({
+    message: "Transfer completed successfully",
+    fromAccountId,
+    toAccountId,
+    amount
+  });
+  registerResponseTime("accounts_transfer_response_time", start);
+});
+
+// -----------------------------------------------------------
+v2Router.put("/accounts/:id/balance", async (req, res) => {
+    const start = getStartTime();
+    const accountId = req.params.id;
+    const { balance } = req.body;
+    console.log("PUT /accounts/" + accountId + "/balance (V2)");
+  
+    if (!accountId || !balance) {
+      return res.status(400).json({ error: "Malformed request" });
+    } else {
+      await setAccountBalanceV2(accountId, balance);
+  
+      res.json(await getAccountsV2());
+      registerResponseTime("accounts_put_response_time", start);
+    }
+});
+  
+// TIERS endpoints
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v2Router.get("/tiers", async (req, res) => {
+  const start = getStartTime();
+  console.log("GET /tiers (V2)");
+  res.json(await getTiersV2());
+  registerResponseTime("tiers_get_response_time", start);
+});
+
+// -----------------------------------------------------------
+v2Router.post("/tiers", async (req, res) => {
+  const start = getStartTime();
+  const { name, spread } = req.body;
+  console.log("POST /tiers (V2)");
+
+  if (!name || !spread) {
+    return res.status(400).json({ error: "Malformed request" });
+  }
+
+  const newTierRequest = { ...req.body };
+  await createTierV2(newTierRequest);
+
+  res.json(await getTiersV2());
+  registerResponseTime("tiers_post_response_time", start);
+});
+
+// RATE endpoints
+// -----------------------------------------------------------
+  
+// -----------------------------------------------------------
+v2Router.get("/rates", async (req, res) => {
+    const start = getStartTime();
+    console.log("GET /rates (V2)");
+    res.json(await getRatesV2());
+    registerResponseTime("rates_get_response_time", start);
+});
+  
+// -----------------------------------------------------------
+v2Router.put("/rates", async (req, res) => {
+    const start = getStartTime();
+    const { baseCurrency, counterCurrency, rate } = req.body;
+    console.log("PUT /rates (V2)");
+  
+    if (!baseCurrency || !counterCurrency || !rate) {
+      return res.status(400).json({ error: "Malformed request" });
+    }
+  
+    const newRateRequest = { ...req.body };
+    await setRateV2(newRateRequest);
+  
+    res.json(await getRatesV2());
+    registerResponseTime("rates_put_response_time", start);
+});
+  
+  
+// LOG endpoint
+// -----------------------------------------------------------
+  
+// -----------------------------------------------------------
+v2Router.get("/log", async (req, res) => {
+    const start = getStartTime();
+    console.log("GET /log (V2)");
+  
+    res.json(await getLogV2());
+    registerResponseTime("log_get_response_time", start);
+});
+  
+  
+// EXCHANGE endpoint
+// -----------------------------------------------------------
+  
+// -----------------------------------------------------------
+v2Router.post("/exchange", async (req, res) => {
+    const start = getStartTime();
+    const {
+      baseCurrency,
+      counterCurrency,
+      baseAccountId,
+      counterAccountId,
+      baseAmount,
+    } = req.body;
+  
+    console.log("POST /exchange (V2)");
+  
+    if (
+      !baseCurrency ||
+      !counterCurrency ||
+      !baseAccountId ||
+      !counterAccountId ||
+      !baseAmount
+    ) {
+      countError("exchange");
+      registerResponseTime("exchange_post_response_time", start);
+      return res.status(400).json({ error: "Malformed request" });
+    }
+  
+    const exchangeRequest = { ...req.body };
+    const exchangeResult = await exchangeV2(exchangeRequest);
+    const counterAmount = exchangeResult.counterAmount;
+
+    addVolumeForCurrency(baseCurrency, baseAmount);
+    addVolumeForCurrency(counterCurrency, counterAmount);
+    
+    addNetVolume(baseCurrency, -baseAmount);
+    addNetVolume(counterCurrency, counterAmount);
+  
+    if (exchangeResult.ok) {
+      countSuccess("exchange");
+      registerResponseTime("exchange_post_response_time", start);
+      res.status(200).json(exchangeResult);
+    } else {
+      countError("exchange");
+      registerResponseTime("exchange_post_response_time", start);
+      res.status(500).json(exchangeResult);
+    }
+});
+
+export default v2Router;
