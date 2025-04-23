@@ -28,7 +28,7 @@ config:
 
 scenarios:
   # Scenario for Get Accounts
-  - name: GET_Accounts
+  - name: GET_Accounts V1
     flow:
       - get:
           url: '/accounts'
@@ -51,7 +51,7 @@ scenarios:
         arrivalRate: 100
 
   # Scenario for Put Account Balance
-  - name: PUT_Account_Balance
+  - name: PUT_Account_Balance V1
     flow:
       - put:
           url: '/accounts/{{ accountId }}/balance'

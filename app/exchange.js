@@ -45,10 +45,6 @@ export async function setAccountBalance(accountId, balance) {
   }
 }
 
-export async function getTiers() {
-  return tiers;
-}
-
 //returns all current exchange rates
 export async function getRates() {
   return rates;
