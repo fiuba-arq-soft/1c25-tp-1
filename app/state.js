@@ -24,6 +24,7 @@ export async function init() {
   scheduleSave(accounts, ACCOUNTS, 1000);
   scheduleSave(rates, RATES, 5000);
   scheduleSave(log, LOG, 1000);
+  scheduleSave(tiers, TIERS, 1000);
 }
 
 export function getAccounts() {
