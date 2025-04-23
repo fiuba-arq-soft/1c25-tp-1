@@ -4,12 +4,14 @@ import {
   init as stateInit, 
   getAccounts as stateAccounts, 
   getRates as stateRates, 
-  getLog as stateLog 
+  getLog as stateLog,
+  getTiers as stateTiers
 } from "./state.js";
 
 let accounts;
 let rates;
 let log;
+let tiers;
 
 //call to initialize the exchange service
 export async function init() {
@@ -18,6 +20,7 @@ export async function init() {
   accounts = stateAccounts();
   rates = stateRates();
   log = stateLog();
+  tiers = stateTiers();
 }
 
 //returns all internal accounts
@@ -32,6 +35,10 @@ export async function setAccountBalance(accountId, balance) {
   if (account != null) {
     account.balance = balance;
   }
+}
+
+export async function getTiers() {
+  return tiers;
 }
 
 //returns all current exchange rates

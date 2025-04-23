@@ -5,6 +5,8 @@ import {
     getAccounts as getAccountsV2,
     createAccount as createAccountV2, // only in v2
     setAccountBalance as setAccountBalanceV2,
+    getTiers as getTiersV2,
+    createTier as createTierV2,
     getRates as getRatesV2,
     setRate as setRateV2,
     getLog as getLogV2,
@@ -129,7 +131,34 @@ v2Router.put("/accounts/:id/balance", async (req, res) => {
     }
 });
   
-  
+// TIERS endpoints
+// -----------------------------------------------------------
+
+// -----------------------------------------------------------
+v2Router.get("/tiers", async (req, res) => {
+  const start = getStartTime();
+  console.log("GET /tiers (V2)");
+  res.json(await getTiersV2());
+  registerResponseTime("tiers_get_response_time", start);
+});
+
+// -----------------------------------------------------------
+v2Router.post("/tiers", async (req, res) => {
+  const start = getStartTime();
+  const { name, spread } = req.body;
+  console.log("POST /tiers (V2)");
+
+  if (!name || !spread) {
+    return res.status(400).json({ error: "Malformed request" });
+  }
+
+  const newTierRequest = { ...req.body };
+  await createTierV2(newTierRequest);
+
+  res.json(await getTiersV2());
+  registerResponseTime("tiers_post_response_time", start);
+});
+
 // RATE endpoints
 // -----------------------------------------------------------
   

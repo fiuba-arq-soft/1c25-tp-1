@@ -2,26 +2,31 @@
   {
     "id": 1,
     "currency": "ARS",
-    "balance": 4000
+    "balance": 4000,
+    "tier": "free"
   },
   {
     "id": 2,
     "currency": "USD",
-    "balance": 60000
+    "balance": 60000,
+    "tier": "gold"
   },
   {
     "id": 3,
     "currency": "EUR",
-    "balance": 40000
+    "balance": 40000,
+    "tier": "premium"
   },
   {
     "id": 4,
     "currency": "BRL",
-    "balance": 60000
+    "balance": 60000,
+    "tier": "premium"
   },
   {
     "id": 5,
     "currency": "ARS",
-    "balance": 3000
+    "balance": 3000,
+    "tier": "gold"
   }
 ]

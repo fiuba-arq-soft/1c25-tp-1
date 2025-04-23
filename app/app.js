@@ -20,6 +20,8 @@ import {
   evaluateFieldsForExchange
 } from "./validations.js";
 
+import { getTiers } from "./state.js";
+
 import {
   init as exchangeInit,
   getAccounts,
