@@ -27,11 +27,11 @@ config:
       arrivalRate: 10
 
 scenarios:
-  # Scenario for Get Accounts
-  - name: GET_Accounts V1
+  # Scenario for Get Accounts V1
+  - name: GET_Accounts_V1
     flow:
       - get:
-          url: '/accounts'
+          url: '/v1/accounts'
 
     # Specific phases for this scenario
     phases:
@@ -50,11 +50,11 @@ scenarios:
         duration: 60
         arrivalRate: 100
 
-  # Scenario for Put Account Balance
+  # Scenario for Put Account Balance V1
   - name: PUT_Account_Balance V1
     flow:
       - put:
-          url: '/accounts/{{ accountId }}/balance'
+          url: '/v1//accounts/{{ accountId }}/balance'
           json: 
             balance: '{{ balance }}'
 
@@ -65,6 +65,28 @@ scenarios:
         arrivalRate: 10
         rampTo: 50
       - name: Plain in 50 by 60s
+        duration: 60
+        arrivalRate: 50
+      - name: Ramp
+        duration: 30
+        arrivalRate: 50
+        rampTo: 100
+      - name: Plain
+        duration: 60
+        arrivalRate: 100
+  
+  - name: GET_Accounts_V2
+    flow:
+      - get:
+          url: '/v2/accounts'
+
+    # Specific phases for this scenario
+    phases:
+      - name: Ramp
+        duration: 30
+        arrivalRate: 10
+        rampTo: 50
+      - name: Plain
         duration: 60
         arrivalRate: 50
       - name: Ramp

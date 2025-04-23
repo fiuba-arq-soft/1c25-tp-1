@@ -22,11 +22,5 @@
     "currency": "BRL",
     "balance": 60000,
     "tier": "premium"
-  },
-  {
-    "id": 5,
-    "currency": "ARS",
-    "balance": 3000,
-    "tier": "gold"
   }
 ]

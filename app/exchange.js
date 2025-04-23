@@ -14,6 +14,7 @@ let log;
 let tiers;
 
 let accountsById = new Map();
+let accountsByCurrency = new Map();
 
 //call to initialize the exchange service
 export async function init() {
@@ -26,6 +27,7 @@ export async function init() {
 
   for (const account of accounts) {
     accountsById.set(account.id, account);
+    accountsByCurrency.set(account.currency, account);
   }
 }
 
@@ -80,9 +82,9 @@ export async function exchange(exchangeRequest) {
   //compute the requested (counter) amount
   const counterAmount = baseAmount * exchangeRate;
   //find our account on the provided (base) currency
-  const baseAccount = findAccountById(clientBaseAccountId);
+  const baseAccount = findAccountByCurrency(baseCurrency);
   //find our account on the counter currency
-  const counterAccount = findAccountById(clientCounterAccountId);
+  const counterAccount = findAccountByCurrency(counterCurrency);
 
   //construct the result object with defaults
   const exchangeResult = {
@@ -135,6 +137,10 @@ async function transfer(fromAccountId, toAccountId, amount) {
   return new Promise((resolve) =>
     setTimeout(() => resolve(true), Math.random() * (max - min + 1) + min)
   );
+}
+
+function findAccountByCurrency(currency) {
+  return accountsByCurrency.get(currency) || null;
 }
 
 function findAccountById(id) {
