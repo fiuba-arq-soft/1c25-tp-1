@@ -60,6 +60,7 @@ const v2Router = express.Router();
 app.use(express.json());
 
 // Register routes
+app.use('/', v1Router); // default route for original v1Router
 app.use('/v1', v1Router);
 app.use('/v2', v2Router);
 
