@@ -22,6 +22,8 @@ import {
 
 import { getTiers } from "./state.js";
 
+import { getAccountById } from './state.js'
+
 import {
   init as exchangeInit,
   getAccounts,
@@ -29,6 +31,7 @@ import {
   getRates,
   setRate,
   getLog,
+  getTiers,
   exchange,
 } from "./exchange.js";
 
