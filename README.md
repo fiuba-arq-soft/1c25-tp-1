@@ -1,7 +1,23 @@
 # TP #1 Arquitectura del Software 1C2025 - Grupo Architecture Summit
 
 En el siguiente repositorio, mostramos los avances que realizamos con nuestro TP.
-Nuestro trabajo puede verse en las siguientes secciones: 
+Nuestro trabajo puede resumirse en los siguientes puntos: 
+
+## Versionado de APIs
+Versionamos la API en distintas versiones. 
+- v1: Caso base
+- v1.1: Caso con modificaciones hechas en el código por nosotros (Mejora de busquedas, validaciones, etc)
+- v2: Caso reemplazando los archivos json por Redis
+
+Para hacer uso y cambiar la versión, en Postman, es necesario enviar esta URL junto con el método correspondiente: http://{{host}}:{{port}}/{{version}}/accounts
+
+Donde host es localhost, port es 5555, y versin es v1, v1.1 o v2
+
+## Puertos 
+Asi quedaron los puertos para el TP:
+- Grafana: 8100
+- Graphite Infra (Con el que se evalua cada request, incluyendo los casos de Artillery) => 8091
+- Graphite Business (Con las métricas de volumen operado y neto) => 8090
 
 ## Diagramas
 En la carpeta diagramas, están los diagramas de components & connectors del caso base
