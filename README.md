@@ -5,8 +5,9 @@ Nuestro trabajo puede verse en las siguientes secciones:
 
 ## Diagramas
 En la carpeta diagramas, están los diagramas de components & connectors del caso base
-de la arquitectura (Como se nos fue dado), y del caso modificado (El caso final añadiendo
-todas nuestras mejoras)
+de la arquitectura (Como se nos fue dado), del caso modificado (El caso añadiendo todas 
+nuestras mejoras) y el caso final (El caso con Redis y la arquitectura final de la 
+entrega)
 
 ## Informes
 En la carpeta informes, están los distintos informes en los que se hacen distintos análisis
