@@ -18,13 +18,20 @@ config:
 
   # General Phases for all scenarios
   phases:
-    - name: Ramp
+    - name: Ramp to 50
       duration: 30
-      arrivalRate: 1
-      rampTo: 10
-    - name: Plain
-      duration: 60
       arrivalRate: 10
+      rampTo: 50
+    - name: Plain at 50
+      duration: 60
+      arrivalRate: 50
+    - name: Ramp to 100
+      duration: 30
+      arrivalRate: 50
+      rampTo: 100
+    - name: Plain at 100
+      duration: 60
+      arrivalRate: 100
 
 scenarios:
   # Scenario for Get Accounts V1
@@ -33,45 +40,11 @@ scenarios:
       - get:
           url: '/v1/accounts'
 
-    # Specific phases for this scenario
-    phases:
-      - name: Ramp
-        duration: 30
-        arrivalRate: 10
-        rampTo: 50
-      - name: Plain
-        duration: 60
-        arrivalRate: 50
-      - name: Ramp
-        duration: 30
-        arrivalRate: 50
-        rampTo: 100
-      - name: Plain
-        duration: 60
-        arrivalRate: 100
-
   # Scenario for Get Accounts V1.1
   - name: GET_Accounts_Version1.1
     flow:
       - get:
           url: '/v1.1/accounts'
-
-    # Specific phases for this scenario
-    phases:
-      - name: Ramp
-        duration: 30
-        arrivalRate: 10
-        rampTo: 50
-      - name: Plain
-        duration: 60
-        arrivalRate: 50
-      - name: Ramp
-        duration: 30
-        arrivalRate: 50
-        rampTo: 100
-      - name: Plain
-        duration: 60
-        arrivalRate: 100
 
   # Scenario for Get Accounts V2
   - name: GET_Accounts_V2
@@ -79,44 +52,10 @@ scenarios:
       - get:
           url: '/v2/accounts'
 
-    # Specific phases for this scenario
-    phases:
-      - name: Ramp
-        duration: 30
-        arrivalRate: 10
-        rampTo: 50
-      - name: Plain
-        duration: 60
-        arrivalRate: 50
-      - name: Ramp
-        duration: 30
-        arrivalRate: 50
-        rampTo: 100
-      - name: Plain
-        duration: 60
-        arrivalRate: 100
-
   # Scenario for Put Account Balance V1
   - name: PUT_Account_Balance V1
     flow:
       - put:
-          url: '/v1//accounts/{{ accountId }}/balance'
+          url: '/v1/accounts/{{ accountId }}/balance'
           json: 
             balance: '{{ balance }}'
-
-    # Specific phases for this scenario
-    phases:
-      - name: Ramp to 50 in 30s
-        duration: 30
-        arrivalRate: 10
-        rampTo: 50
-      - name: Plain in 50 by 60s
-        duration: 60
-        arrivalRate: 50
-      - name: Ramp
-        duration: 30
-        arrivalRate: 50
-        rampTo: 100
-      - name: Plain
-        duration: 60
-        arrivalRate: 100
