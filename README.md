@@ -55,3 +55,7 @@ proyecto, separandolos en criticos, importantes pero no críticos, y menos relev
 - Análisis de diseño y QAs: Se hace el análisis del diseño de la arquitectura base, y cómo
 afecta a los distintos QAs. También se hace una crítica, y se explican las mejoras que se 
 hicieron a nivel código, y cómo estas afectan a los distintos QAs.
+- Tácticas de diseño: Se comentan algunas de las tácticas de diseño realizadas para mejorar
+los QAs del sistema.
+- Tradeoff-QAs: Se analiza el tradeoff que hay entre QAs para las diferentes decisiones
+de diseño realizadas para el proyecto
