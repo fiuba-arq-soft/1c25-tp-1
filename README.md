@@ -39,26 +39,10 @@ versiones (Una a la vez), y se usa el archivo exchanges.csv para setear los exch
 
 Y dentro de Run_Scenarios están los resultados de Artillery
 
-## Diagramas
-En la carpeta diagramas, están los diagramas de components & connectors del caso base
-de la arquitectura (Como se nos fue dado), del caso modificado (El caso añadiendo todas 
-nuestras mejoras) y el caso final (El caso con Redis y la arquitectura final de la 
-entrega)
-
 ## Informes
 En la carpeta informes, están los distintos informes en los que se hacen distintos análisis
 de la arquitectura, del proyecto y demas.
-- Analisis y critica de la arquitectura: Se describe la arquitectura, los componentes y capas
-de la misma, los servicios presentes, y se hace una crítica a alguno de los puntos de la
-arquitectura. 
-- Analisis QAs relevantes: Se analizan los atributos de calidad que importan para este
-proyecto, separandolos en criticos, importantes pero no críticos, y menos relevantes
-- Análisis de diseño y QAs: Se hace el análisis del diseño de la arquitectura base, y cómo
-afecta a los distintos QAs. También se hace una crítica, y se explican las mejoras que se 
-hicieron a nivel código, y cómo estas afectan a los distintos QAs.
-- Tácticas de diseño: Se comentan algunas de las tácticas de diseño realizadas para mejorar
-los QAs del sistema.
-- Tradeoff-QAs: Se analiza el tradeoff que hay entre QAs para las diferentes decisiones
-de diseño realizadas para el proyecto
+- 
+- Arquitectura de software - TP1: Informe principal con análisis de la arquitectura base, pruebas realizadas, tácticas empleadas y arquitectura final.
 - Resultados grafana: Se muestran los resultados de grafana al correr los distintos escenarios
 de Artillery
