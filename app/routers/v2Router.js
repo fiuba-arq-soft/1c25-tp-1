@@ -5,8 +5,6 @@ import {
     getAccounts as getAccountsV2,
     createAccount as createAccountV2, // only in v2
     setAccountBalance as setAccountBalanceV2,
-    getTiers as getTiersV2,
-    createTier as createTierV2,
     getRates as getRatesV2,
     setRate as setRateV2,
     getLog as getLogV2,
@@ -57,64 +55,6 @@ v2Router.post("/accounts", async (req, res) => {
 });
 
 // -----------------------------------------------------------
-v2Router.post("/transfer", async (req, res) => {
-  const start = getStartTime();
-  const { fromAccountId, toAccountId, amount } = req.body;
-  console.log("POST /transfer (V2)");
-
-  if (fromAccountId === undefined) {
-    return res.status(400).json({ error: "Missing field: fromAccountId" });
-  }
-
-  if (toAccountId === undefined) {
-    return res.status(400).json({ error: "Missing field: toAccountId" });
-  }
-
-  if (amount === undefined) {
-    return res.status(400).json({ error: "Missing field: amount" });
-  }
-
-  if (!Number.isInteger(fromAccountId) || fromAccountId <= 0) {
-    return res.status(400).json({ error: "Invalid fromAccountId. Must be a positive integer." });
-  }
-
-  if (!Number.isInteger(toAccountId) || toAccountId <= 0) {
-    return res.status(400).json({ error: "Invalid toAccountId. Must be a positive integer." });
-  }
-
-  if (typeof amount !== "number" || amount <= 0) {
-    return res.status(400).json({ error: "Invalid amount. Must be a positive number." });
-  }
-
-  const accounts = await getAccountsV2();
-  const fromAccount = accounts.find(acc => acc.id === fromAccountId);
-  const toAccount = accounts.find(acc => acc.id === toAccountId);
-
-  if (!fromAccount || !toAccount) {
-    return res.status(404).json({ error: "One or both accounts not found." });
-  }
-
-  if (fromAccount.currency !== toAccount.currency) {
-    return res.status(400).json({ error: "Accounts must have the same currency" });
-  }
-
-  if (fromAccount.balance < amount) {
-    return res.status(400).json({ error: "Insufficient funds in source account." });
-  }
-
-  await setAccountBalanceV2(fromAccountId, fromAccount.balance - amount);
-  await setAccountBalanceV2(toAccountId, toAccount.balance + amount);
-
-  res.status(200).json({
-    message: "Transfer completed successfully",
-    fromAccountId,
-    toAccountId,
-    amount
-  });
-  registerResponseTime("accounts_transfer_response_time", start);
-});
-
-// -----------------------------------------------------------
 v2Router.put("/accounts/:id/balance", async (req, res) => {
     const start = getStartTime();
     const accountId = req.params.id;
@@ -131,34 +71,6 @@ v2Router.put("/accounts/:id/balance", async (req, res) => {
     }
 });
   
-// TIERS endpoints
-// -----------------------------------------------------------
-
-// -----------------------------------------------------------
-v2Router.get("/tiers", async (req, res) => {
-  const start = getStartTime();
-  console.log("GET /tiers (V2)");
-  res.json(await getTiersV2());
-  registerResponseTime("tiers_get_response_time", start);
-});
-
-// -----------------------------------------------------------
-v2Router.post("/tiers", async (req, res) => {
-  const start = getStartTime();
-  const { name, spread } = req.body;
-  console.log("POST /tiers (V2)");
-
-  if (!name || !spread) {
-    return res.status(400).json({ error: "Malformed request" });
-  }
-
-  const newTierRequest = { ...req.body };
-  await createTierV2(newTierRequest);
-
-  res.json(await getTiersV2());
-  registerResponseTime("tiers_post_response_time", start);
-});
-
 // RATE endpoints
 // -----------------------------------------------------------
   

@@ -56,38 +56,6 @@
 			"response": []
 		},
 		{
-			"name": "Get Tiers",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://{{host}}:{{port}}/{{version}}/tiers",
-					"protocol": "http",
-					"host": [
-						"{{host}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{version}}",
-						"tiers"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get Log",
 			"request": {
 				"method": "GET",
@@ -186,13 +154,13 @@
 			"response": []
 		},
 		{
-			"name": "Post Transfer",
+			"name": "Set balance",
 			"request": {
-				"method": "POST",
+				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"fromAccountId\": 1, \r\n    \"toAccountId\": 2, \r\n    \"amount\": 100\r\n}",
+					"raw": "{\n    \"balance\": 2000000\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -200,15 +168,16 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{host}}:{{port}}/{{version}}/transfer",
+					"raw": "http://{{host}}:{{port}}/accounts/1/balance",
 					"protocol": "http",
 					"host": [
 						"{{host}}"
 					],
 					"port": "{{port}}",
 					"path": [
-						"{{version}}",
-						"transfer"
+						"accounts",
+						"1",
+						"balance"
 					]
 				}
 			},

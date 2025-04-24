@@ -51,11 +51,3 @@ scenarios:
     flow:
       - get:
           url: '/v2/accounts'
-
-  # Scenario for Put Account Balance V1
-  - name: PUT_Account_Balance V1
-    flow:
-      - put:
-          url: '/v1/accounts/{{ accountId }}/balance'
-          json: 
-            balance: '{{ balance }}'
