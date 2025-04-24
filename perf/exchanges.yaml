@@ -20,41 +20,63 @@ config:
   pool: 50 # All HTTP requests from all virtual users will be sent over the same connections
 
   phases:
-    - name: Ramp
+    - name: Ramp to 10
       duration: 30
       arrivalRate: 1
       rampTo: 10
-    - name: Plain
+    - name: Plain in 100
       duration: 60
       arrivalRate: 10
-    - name: Ramp
+    - name: Ramp to 50 
       duration: 30
       arrivalRate: 10
       rampTo: 50
-    - name: Plain
+    - name: Plain in 100
       duration: 60
       arrivalRate: 50
-    - name: Ramp
+    - name: Ramp to 100
       duration: 30
       arrivalRate: 50
       rampTo: 100
-    - name: Plain
+    - name: Plain in 100
       duration: 60
       arrivalRate: 100
-    - name: Ramp
-      duration: 30
-      arrivalRate: 100
-      rampTo: 200
-    - name: Plain
-      duration: 60
-      arrivalRate: 200
+    #- name: Ramp
+    #  duration: 30
+    #  arrivalRate: 100
+    #  rampTo: 200
+    #- name: Plain
+    #  duration: 60
+    #  arrivalRate: 200
     
 
 scenarios:
-  - name: POST_Exchange
+  - name: POST_Exchange_V1
     flow:
       - post:
           url: '/exchange'
+          json: 
+            baseCurrency: '{{ baseCurrency }}'
+            counterCurrency: '{{ counterCurrency }}'
+            baseAmount: '{{ baseAmount }}'
+            baseAccountId: '{{ baseAccountId }}'
+            counterAccountId: '{{ counterAccountId }}'
+
+  - name: POST_Exchange_Version1.1
+    flow:
+      - post:
+          url: '/v1.1/exchange'
+          json: 
+            baseCurrency: '{{ baseCurrency }}'
+            counterCurrency: '{{ counterCurrency }}'
+            baseAmount: '{{ baseAmount }}'
+            baseAccountId: '{{ baseAccountId }}'
+            counterAccountId: '{{ counterAccountId }}'
+
+  - name: POST_Exchange_V2
+    flow:
+      - post:
+          url: '/v2/exchange'
           json: 
             baseCurrency: '{{ baseCurrency }}'
             counterCurrency: '{{ counterCurrency }}'
