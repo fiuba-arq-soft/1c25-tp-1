@@ -184,6 +184,35 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Post Transfer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fromAccountId\": 1, \r\n    \"toAccountId\": 2, \r\n    \"amount\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/{{version}}/transfer",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"transfer"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
