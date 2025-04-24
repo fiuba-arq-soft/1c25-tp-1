@@ -11,13 +11,32 @@ Versionamos la API en distintas versiones.
 
 Para hacer uso y cambiar la versión, en Postman, es necesario enviar esta URL junto con el método correspondiente: http://{{host}}:{{port}}/{{version}}/accounts
 
-Donde host es localhost, port es 5555, y versin es v1, v1.1 o v2
+Donde host es localhost, port es 5555, y version es v1, v1.1 o v2
+
+## Dashboards de grafana
+Para grafana creamos 2 dashboards:
+- Infra (O normal): Con el que se evalua cada request, incluyendo los casos de Artillery
+- Business: Con las métricas de volumen operado y neto
 
 ## Puertos 
 Asi quedaron los puertos para el TP:
 - Grafana: 8100
-- Graphite Infra (Con el que se evalua cada request, incluyendo los casos de Artillery) => 8091
-- Graphite Business (Con las métricas de volumen operado y neto) => 8090
+- Graphite Infra => 8091
+- Graphite Business => 8090
+
+## Escenarios de Artillery 
+En la carpeta perf, creamos los escenarios de Artillery. Tenemos todo organizado de esta forma:
+- accounts.yaml: Tiene los escenarios para el GET y el POST (Para el caso de Redis en el que hay
+que crear las cuentas a mano) de Cuentas. Se prueba para cada una de sus versiones (Una a la vez), 
+y se usa el archivo balances.csv para setear los balances de las cuentas.
+- logs.yaml: Tiene los escenarios para el GET de Logs. Se prueba para cada una de sus versiones 
+(Una a la vez)
+- rates.yaml: Tiene los escenarios para el GET y PUT de Rates. Se prueba para cada una de sus 
+versiones (Una a la vez), y se usa el archivo rates.csv para setear los rates.
+- exchanges.yaml: Tiene los escenarios para el POST de Exchange. Se prueba para cada una de sus 
+versiones (Una a la vez), y se usa el archivo exchanges.csv para setear los exchanges.
+
+Y dentro de Run_Scenarios están los resultados de Artillery
 
 ## Diagramas
 En la carpeta diagramas, están los diagramas de components & connectors del caso base
