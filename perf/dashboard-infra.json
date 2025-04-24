@@ -18,13 +18,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 16,
+  "id": 1,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejtzu5c0n37kb"
+        "uid": "eejwt9j52iku8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -121,7 +121,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -148,7 +148,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejn6lwota41se"
+        "uid": "dejwtaxkdq39cb"
       },
       "fieldConfig": {
         "defaults": {
@@ -189,6 +189,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -201,7 +202,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "ms"
         },
         "overrides": [
           {
@@ -223,7 +225,7 @@
                 "value": {
                   "legend": false,
                   "tooltip": false,
-                  "viz": true
+                  "viz": false
                 }
               }
             ]
@@ -247,7 +249,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -260,7 +262,7 @@
         {
           "datasource": {
             "type": "graphite",
-            "uid": "aejn6lwota41se"
+            "uid": "dejwtaxkdq39cb"
           },
           "hide": false,
           "refCount": 0,
@@ -271,7 +273,7 @@
         {
           "datasource": {
             "type": "graphite",
-            "uid": "aejn6lwota41se"
+            "uid": "dejwtaxkdq39cb"
           },
           "hide": false,
           "refCount": 0,
@@ -282,7 +284,7 @@
         {
           "datasource": {
             "type": "graphite",
-            "uid": "aejn6lwota41se"
+            "uid": "dejwtaxkdq39cb"
           },
           "hide": false,
           "refCount": 0,
@@ -297,7 +299,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejtzu5c0n37kb"
+        "uid": "eejwt9j52iku8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -464,7 +466,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -548,7 +550,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejtzu5c0n37kb"
+        "uid": "eejwt9j52iku8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -646,7 +648,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -701,7 +703,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejtzu5c0n37kb"
+        "uid": "eejwt9j52iku8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -747,7 +749,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -813,7 +816,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -842,7 +845,8 @@
           "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "alias(asPercent(stats.gauges.cadvisor.$container.memory_working_set, 34359738368), 'Memory')"
+          "target": "alias(asPercent(stats.gauges.cadvisor.$container.memory_working_set, 34359738368), 'Memory')",
+          "textEditor": false
         }
       ],
       "title": "Resources",
@@ -934,6 +938,6 @@
   "timezone": "",
   "title": "Dashboard Grafana",
   "uid": "arxIPammk",
-  "version": 11,
+  "version": 5,
   "weekStart": ""
 }
