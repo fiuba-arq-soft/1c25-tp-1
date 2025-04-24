@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 16,
+  "id": 23,
   "links": [],
   "panels": [
     {
@@ -121,7 +121,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -189,6 +189,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -201,7 +202,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "ms"
         },
         "overrides": [
           {
@@ -247,7 +249,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -464,7 +466,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -646,7 +648,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -814,7 +816,7 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "width": 250
+          "width": 400
         },
         "tooltip": {
           "hideZeros": false,
@@ -843,7 +845,8 @@
           "hide": false,
           "refCount": 0,
           "refId": "B",
-          "target": "alias(asPercent(stats.gauges.cadvisor.$container.memory_working_set, 34359738368), 'Memory')"
+          "target": "alias(asPercent(stats.gauges.cadvisor.$container.memory_working_set, 34359738368), 'Memory')",
+          "textEditor": false
         }
       ],
       "title": "Resources",
@@ -928,13 +931,13 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Dashboard Infra",
-  "uid": "arxIPammk",
-  "version": 15,
+  "title": "Dashboard Infra V2",
+  "uid": "arxIPammkijoij",
+  "version": 2,
   "weekStart": ""
 }
