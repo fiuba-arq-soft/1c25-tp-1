@@ -18,151 +18,13 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 2,
+    "id": 16,
     "links": [],
     "panels": [
       {
         "datasource": {
           "type": "graphite",
-          "uid": "bejmzmu9090qod"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "axisBorderShow": false,
-              "axisCenteredZero": false,
-              "axisColorMode": "text",
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "barWidthFactor": 0.6,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "insertNulls": false,
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 15,
-          "w": 24,
-          "x": 10,
-          "y": 10
-        },
-        "id": 87,
-        "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "pluginVersion": "11.5.2",
-        "targets": [
-          {
-            "datasource": {
-              "type": "graphite",
-              "uid": "cej3vho1qk45cd"
-            },
-            "hide": false,
-            "refCount": 0,
-            "refId": "B",
-            "target": "stats.arvault.timers.response.exchange_post_response_time.mean",
-            "textEditor": true
-          },
-          {
-            "datasource": {
-              "type": "graphite",
-              "uid": "cej3vho1qk45cd"
-            },
-            "hide": false,
-            "refCount": 0,
-            "refId": "A",
-            "target": "stats.timers.response.exchange_post_response_time.mean_90",
-            "textEditor": true
-          },
-          {
-            "datasource": {
-              "type": "graphite",
-              "uid": "cej3vho1qk45cd"
-            },
-            "hide": false,
-            "refCount": 0,
-            "refId": "C",
-            "target": "stats.timers.response.exchange_post_response_time.lower"
-          },
-          {
-            "datasource": {
-              "type": "graphite",
-              "uid": "cej3vho1qk45cd"
-            },
-            "hide": false,
-            "refCount": 0,
-            "refId": "D",
-            "target": "stats.timers.response.exchange_post_response_time.upper"
-          },
-          {
-            "datasource": {
-              "type": "graphite",
-              "uid": "cej3vho1qk45cd"
-            },
-            "hide": false,
-            "refCount": 0,
-            "refId": "E",
-            "target": "stats.timers.response.exchange_post_response_time.median"
-          }
-        ],
-        "title": "Response Time (server-side)",
-        "type": "timeseries"
-      },
-      {
-        "datasource": {
-          "type": "graphite",
-          "uid": "eeipq8y0k17ggb"
+          "uid": "aejtzu5c0n37kb"
         },
         "fieldConfig": {
           "defaults": {
@@ -272,7 +134,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "refCount": 0,
             "refId": "B",
@@ -286,7 +148,7 @@
       {
         "datasource": {
           "type": "graphite",
-          "uid": "eeipq8y0k17ggb"
+          "uid": "aejtzu5c0n37kb"
         },
         "fieldConfig": {
           "defaults": {
@@ -466,7 +328,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "refCount": 0,
             "refId": "B",
@@ -476,7 +338,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "refCount": 0,
             "refId": "A",
@@ -485,7 +347,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "refCount": 0,
             "refId": "C",
@@ -494,7 +356,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "refCount": 0,
             "refId": "D",
@@ -503,7 +365,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "hide": false,
             "refCount": 0,
@@ -513,7 +375,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "hide": false,
             "refCount": 0,
@@ -523,7 +385,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "hide": false,
             "refCount": 0,
@@ -537,7 +399,153 @@
       {
         "datasource": {
           "type": "graphite",
-          "uid": "eeipq8y0k17ggb"
+          "uid": "aejn6lwota41se"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 15,
+          "w": 24,
+          "x": 0,
+          "y": 14
+        },
+        "id": 87,
+        "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "width": 250
+        },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.5.2",
+        "targets": [
+          {
+            "datasource": {
+              "type": "graphite",
+              "uid": "aejn6lwota41se"
+            },
+            "hide": false,
+            "refCount": 0,
+            "refId": "B",
+            "target": "stats.timers.arvault.response.exchange_post_response_time.mean",
+            "textEditor": true
+          },
+          {
+            "datasource": {
+              "type": "graphite",
+              "uid": "aejn6lwota41se"
+            },
+            "hide": false,
+            "refCount": 0,
+            "refId": "A",
+            "target": "stats.timers.arvault.response.exchange_post_response_time.mean_90",
+            "textEditor": true
+          },
+          {
+            "datasource": {
+              "type": "graphite",
+              "uid": "aejn6lwota41se"
+            },
+            "hide": false,
+            "refCount": 0,
+            "refId": "C",
+            "target": "stats.timers.arvault.response.exchange_post_response_time.lower",
+            "textEditor": true
+          },
+          {
+            "datasource": {
+              "type": "graphite",
+              "uid": "aejn6lwota41se"
+            },
+            "hide": false,
+            "refCount": 0,
+            "refId": "D",
+            "target": "stats.timers.arvault.response.exchange_post_response_time.upper",
+            "textEditor": true
+          },
+          {
+            "datasource": {
+              "type": "graphite",
+              "uid": "aejn6lwota41se"
+            },
+            "hide": false,
+            "refCount": 0,
+            "refId": "E",
+            "target": "stats.timers.arvault.response.exchange_post_response_time.median",
+            "textEditor": true
+          }
+        ],
+        "title": "Response Time (server-side)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "graphite",
+          "uid": "aejtzu5c0n37kb"
         },
         "fieldConfig": {
           "defaults": {
@@ -621,7 +629,7 @@
           "h": 7,
           "w": 24,
           "x": 0,
-          "y": 14
+          "y": 29
         },
         "id": 3,
         "options": {
@@ -648,7 +656,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "refCount": 0,
             "refId": "C",
@@ -657,7 +665,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "refCount": 0,
             "refId": "B",
@@ -666,7 +674,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "hide": false,
             "refCount": 0,
@@ -676,7 +684,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "hide": false,
             "refCount": 0,
@@ -690,7 +698,7 @@
       {
         "datasource": {
           "type": "graphite",
-          "uid": "eeipq8y0k17ggb"
+          "uid": "aejtzu5c0n37kb"
         },
         "fieldConfig": {
           "defaults": {
@@ -789,7 +797,7 @@
           "h": 7,
           "w": 24,
           "x": 0,
-          "y": 21
+          "y": 36
         },
         "id": 1,
         "options": {
@@ -816,7 +824,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "hide": false,
             "refCount": 0,
@@ -827,7 +835,7 @@
           {
             "datasource": {
               "type": "graphite",
-              "uid": "eeipq8y0k17ggb"
+              "uid": "aejtzu5c0n37kb"
             },
             "hide": false,
             "refCount": 0,
@@ -840,7 +848,7 @@
       }
     ],
     "preload": false,
-    "refresh": "auto",
+    "refresh": "5s",
     "schemaVersion": 40,
     "tags": [],
     "templating": {
@@ -917,13 +925,13 @@
       ]
     },
     "time": {
-      "from": "now-5m",
+      "from": "now-15m",
       "to": "now"
     },
     "timepicker": {},
     "timezone": "",
-    "title": "Main dashboard",
+    "title": "Dashboard Grafana",
     "uid": "arxIPammk",
-    "version": 4,
+    "version": 2,
     "weekStart": ""
   }

@@ -50,6 +50,52 @@ scenarios:
         duration: 60
         arrivalRate: 100
 
+  # Scenario for Get Accounts V1.1
+  - name: GET_Accounts_Version1.1
+    flow:
+      - get:
+          url: '/v1.1/accounts'
+
+    # Specific phases for this scenario
+    phases:
+      - name: Ramp
+        duration: 30
+        arrivalRate: 10
+        rampTo: 50
+      - name: Plain
+        duration: 60
+        arrivalRate: 50
+      - name: Ramp
+        duration: 30
+        arrivalRate: 50
+        rampTo: 100
+      - name: Plain
+        duration: 60
+        arrivalRate: 100
+
+  # Scenario for Get Accounts V2
+  - name: GET_Accounts_V2
+    flow:
+      - get:
+          url: '/v2/accounts'
+
+    # Specific phases for this scenario
+    phases:
+      - name: Ramp
+        duration: 30
+        arrivalRate: 10
+        rampTo: 50
+      - name: Plain
+        duration: 60
+        arrivalRate: 50
+      - name: Ramp
+        duration: 30
+        arrivalRate: 50
+        rampTo: 100
+      - name: Plain
+        duration: 60
+        arrivalRate: 100
+
   # Scenario for Put Account Balance V1
   - name: PUT_Account_Balance V1
     flow:
@@ -74,26 +120,3 @@ scenarios:
       - name: Plain
         duration: 60
         arrivalRate: 100
-  
-  - name: GET_Accounts_V2
-    flow:
-      - get:
-          url: '/v2/accounts'
-
-    # Specific phases for this scenario
-    phases:
-      - name: Ramp
-        duration: 30
-        arrivalRate: 10
-        rampTo: 50
-      - name: Plain
-        duration: 60
-        arrivalRate: 50
-      - name: Ramp
-        duration: 30
-        arrivalRate: 50
-        rampTo: 100
-      - name: Plain
-        duration: 60
-        arrivalRate: 100
-
