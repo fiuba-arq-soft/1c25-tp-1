@@ -18,13 +18,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 23,
+  "id": 1,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejtzu5c0n37kb"
+        "uid": "eejwt9j52iku8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -148,7 +148,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejn6lwota41se"
+        "uid": "dejwtaxkdq39cb"
       },
       "fieldConfig": {
         "defaults": {
@@ -262,7 +262,7 @@
         {
           "datasource": {
             "type": "graphite",
-            "uid": "aejn6lwota41se"
+            "uid": "dejwtaxkdq39cb"
           },
           "hide": false,
           "refCount": 0,
@@ -273,7 +273,7 @@
         {
           "datasource": {
             "type": "graphite",
-            "uid": "aejn6lwota41se"
+            "uid": "dejwtaxkdq39cb"
           },
           "hide": false,
           "refCount": 0,
@@ -284,7 +284,7 @@
         {
           "datasource": {
             "type": "graphite",
-            "uid": "aejn6lwota41se"
+            "uid": "dejwtaxkdq39cb"
           },
           "hide": false,
           "refCount": 0,
@@ -299,7 +299,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejtzu5c0n37kb"
+        "uid": "eejwt9j52iku8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -550,7 +550,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejtzu5c0n37kb"
+        "uid": "eejwt9j52iku8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -703,7 +703,7 @@
     {
       "datasource": {
         "type": "graphite",
-        "uid": "aejtzu5c0n37kb"
+        "uid": "eejwt9j52iku8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -931,13 +931,13 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Dashboard Infra V2",
-  "uid": "arxIPammkijoij",
-  "version": 2,
+  "title": "Dashboard Grafana",
+  "uid": "arxIPammk",
+  "version": 5,
   "weekStart": ""
 }
