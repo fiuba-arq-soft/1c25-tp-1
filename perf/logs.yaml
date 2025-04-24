@@ -15,21 +15,21 @@ config:
       duration: 30
       arrivalRate: 1
       rampTo: 5
-    - name: Plain at 5
+    - name: Plain in 5
       duration: 60
       arrivalRate: 5
     - name: Ramp to 10
       duration: 30
       arrivalRate: 5
       rampTo: 10
-    - name: Plain at 10
+    - name: Plain in 10
       duration: 60
       arrivalRate: 10
     - name: Ramp to 100
       duration: 30
       arrivalRate: 50
       rampTo: 100
-    - name: Plain at 100
+    - name: Plain in 100
       duration: 60
       arrivalRate: 100
     

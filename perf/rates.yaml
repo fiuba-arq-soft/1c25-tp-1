@@ -36,11 +36,20 @@ config:
 
 # Scenarios
 scenarios:
-  # Scenario for Get Rates
-  - name: GET_Rates
+  - name: GET_Rates_V1
     flow:
       - get:
           url: '/rates'
+
+  - name: GET_Rates_Version1.1
+    flow:
+      - get:
+          url: '/v1.1/rates'
+
+  - name: GET_Rates_V2
+    flow:
+      - get:
+          url: '/v2/rates'
 
   # Scenario for Put Rates
   - name: PUT_Rates

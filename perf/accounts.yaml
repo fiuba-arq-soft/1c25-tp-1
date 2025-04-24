@@ -22,14 +22,14 @@ config:
       duration: 30
       arrivalRate: 10
       rampTo: 50
-    - name: Plain at 50
+    - name: Plain in 50
       duration: 60
       arrivalRate: 50
     - name: Ramp to 100
       duration: 30
       arrivalRate: 50
       rampTo: 100
-    - name: Plain at 100
+    - name: Plain in 100
       duration: 60
       arrivalRate: 100
 
