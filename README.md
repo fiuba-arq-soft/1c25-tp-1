@@ -59,3 +59,5 @@ hicieron a nivel código, y cómo estas afectan a los distintos QAs.
 los QAs del sistema.
 - Tradeoff-QAs: Se analiza el tradeoff que hay entre QAs para las diferentes decisiones
 de diseño realizadas para el proyecto
+- Resultados grafana: Se muestran los resultados de grafana al correr los distintos escenarios
+de Artillery
