@@ -51,11 +51,67 @@ scenarios:
       - get:
           url: '/v2/rates'
 
-  # Scenario for Put Rates
-  - name: PUT_Rates
+  # Scenario for Put Rates V1
+  - name: PUT_Rates_V1
     flow:
       - put:
           url: '/rates'
+          json: 
+            baseCurrency: '{{ baseCurrency }}'
+            counterCurrency: '{{ counterCurrency }}'
+            rate: '{{ rate }}'
+
+
+    # Specific phases for this scenario
+    phases:
+      - name: Ramp to 50 in 30s
+        duration: 30
+        arrivalRate: 10
+        rampTo: 50
+      - name: Plain in 50 by 60s
+        duration: 60
+        arrivalRate: 50
+      - name: Ramp to 100 in 30s
+        duration: 30
+        arrivalRate: 50
+        rampTo: 100
+      - name: Plain in 100 by 60s
+        duration: 60
+        arrivalRate: 100
+
+  # Scenario for Put Rates V1.1
+  - name: PUT_Rates_Version1.1
+    flow:
+      - put:
+          url: '/v1.1/rates'
+          json: 
+            baseCurrency: '{{ baseCurrency }}'
+            counterCurrency: '{{ counterCurrency }}'
+            rate: '{{ rate }}'
+
+
+    # Specific phases for this scenario
+    phases:
+      - name: Ramp to 50 in 30s
+        duration: 30
+        arrivalRate: 10
+        rampTo: 50
+      - name: Plain in 50 by 60s
+        duration: 60
+        arrivalRate: 50
+      - name: Ramp to 100 in 30s
+        duration: 30
+        arrivalRate: 50
+        rampTo: 100
+      - name: Plain in 100 by 60s
+        duration: 60
+        arrivalRate: 100
+
+  # Scenario for Put Rates V2
+  - name: PUT_Rates_V2
+    flow:
+      - put:
+          url: '/v2/rates'
           json: 
             baseCurrency: '{{ baseCurrency }}'
             counterCurrency: '{{ counterCurrency }}'
