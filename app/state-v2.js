@@ -70,28 +70,6 @@ export async function updateAccount(updatedAccount) {
     }
 }
 
-// Get all tiers
-export async function getTiers() {
-  try {
-    const keys = await client.keys('tiers:*');
-    const tiers = await Promise.all(keys.map(key => client.get(key).then(JSON.parse)));
-    return tiers;
-  } catch (err) {
-    console.error('Error fetching tiers from Redis:', err);
-    return null;
-  }
-}
-
-// Create Tier
-export async function createTier(newTier) {
-  try {
-    const { name, spread } = newTier;
-    await client.set(`tiers:${name}`, JSON.stringify({ name, spread }));
-  } catch (err) {
-    console.error('Error creating tier in Redis:', err);
-  }
-}
-
 // Get all rates
 export async function getRates() {
     try {

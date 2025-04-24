@@ -6,7 +6,6 @@ import {
   getAccountById as redisGetAccountById,
   getAccountByCurrency as redisGetAccountByCurrency,
   updateAccount as redisUpdateAccount,
-  getTiers as redisGetTiers,
   createTier as redisCreateTier,
   getRates as redisGetRates,
   createRate as redisCreateRate,
@@ -46,11 +45,6 @@ export async function setAccountBalance(accountId, balance) {
     account.balance = balance;
     await redisUpdateAccount(account);
   }
-}
-
-// Returns all current exchange rates
-export async function getTiers() {
-  return await redisGetTiers();
 }
 
 export async function createTier(tierRequest) {

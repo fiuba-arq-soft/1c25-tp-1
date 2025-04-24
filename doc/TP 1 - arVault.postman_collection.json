@@ -54,25 +54,6 @@
 			"response": []
 		},
 		{
-			"name": "Get Tiers",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://{{host}}:{{port}}/tiers",
-					"protocol": "http",
-					"host": [
-						"{{host}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"tiers"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get Log",
 			"request": {
 				"method": "GET",

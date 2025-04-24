@@ -5,13 +5,11 @@ import {
   getAccounts as stateAccounts,
   getRates as stateRates, 
   getLog as stateLog, 
-  getTiers as stateTiers 
 } from "./state.js";
 
 let accounts;
 let rates;
 let log;
-let tiers;
 
 let accountsById = new Map();
 let accountsByCurrency = new Map();
@@ -23,7 +21,6 @@ export async function init() {
   accounts = stateAccounts();
   rates = stateRates();
   log = stateLog();
-  tiers = stateTiers();
 
   for (const account of accounts) {
     accountsById.set(account.id, account);
@@ -53,10 +50,6 @@ export async function getRates() {
 //returns the whole transaction log
 export async function getLog() {
   return log;
-}
-
-export function getTiers() {
-  return tiers;
 }
 
 //sets the exchange rate for a given pair of currencies, and the reciprocal rate as well

@@ -4,7 +4,6 @@ import {
     init as exchangeInit,
     getAccounts,
     setAccountBalance,
-    getTiers,
     getRates,
     setRate,
     getLog,
@@ -110,16 +109,6 @@ v1Router.put("/accounts/:id/balance", async (req, res) => {
       registerResponseTime("accounts_put_response_time", start);
     }
 });
-
-// TIER endpoints
-// -----------------------------------------------------------
-v1Router.get("/tiers", async (req, res) => {
-  const start = getStartTime();
-  console.log("GET /tiers");
-  res.json(await getTiers());
-  registerResponseTime("tiers_get_response_time", start);
-});
-
 
 // RATE endpoints
 // -----------------------------------------------------------

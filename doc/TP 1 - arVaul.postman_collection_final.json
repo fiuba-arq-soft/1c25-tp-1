@@ -56,38 +56,6 @@
 			"response": []
 		},
 		{
-			"name": "Get Tiers",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://{{host}}:{{port}}/{{version}}/tiers",
-					"protocol": "http",
-					"host": [
-						"{{host}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{version}}",
-						"tiers"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get Log",
 			"request": {
 				"method": "GET",
