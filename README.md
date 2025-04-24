@@ -17,19 +17,19 @@ Donde host es localhost, port es 5555, y version es v1, v1.1 o v2
 Para grafana creamos 2 dashboards:
 - Infra (O normal): Con el que se evalua cada request, incluyendo los casos de Artillery
 - Business: Con las métricas de volumen operado y neto
+- 
 En grafana, se deben crear los datasource graphite-infra (Con URL http://graphite-infra:80) y graphite-business (Con URL http://graphite-business:80)
 
 ## Puertos 
 Asi quedaron los puertos para el TP:
-- Grafana: 8100
+- Grafana => 8100
 - Graphite Infra => 8091
 - Graphite Business => 8090
 
 ## Escenarios de Artillery 
 En la carpeta perf, creamos los escenarios de Artillery. Tenemos todo organizado de esta forma:
-- accounts.yaml: Tiene los escenarios para el GET y el POST (Para el caso de Redis en el que hay
-que crear las cuentas a mano) de Cuentas. Se prueba para cada una de sus versiones (Una a la vez), 
-y se usa el archivo balances.csv para setear los balances de las cuentas.
+- accounts.yaml: Tiene los escenarios para el GET de Cuentas. Se prueba para cada una de sus
+versiones (Una a la vez), y se usa el archivo balances.csv para setear los balances de las cuentas.
 - logs.yaml: Tiene los escenarios para el GET de Logs. Se prueba para cada una de sus versiones 
 (Una a la vez)
 - rates.yaml: Tiene los escenarios para el GET y PUT de Rates. Se prueba para cada una de sus 
