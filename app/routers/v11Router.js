@@ -19,7 +19,6 @@ import {
 } from "../utils/metrics.js";
 
 import {
-    evaluateFieldsForTransfer,
     evaluateFieldsForSetBalance,
     evaluateFieldsForRate,
     evaluateFieldsForExchange
@@ -40,45 +39,6 @@ v11Router.get("/accounts", async (req, res) => {
   
     res.json(await getAccounts());
     registerResponseTime("accounts_get_response_time", start);
-});
-
-// -----------------------------------------------------------
-v11Router.post("/transfer", async (req, res) => {
-  const start = getStartTime();
-  const { fromAccountId, toAccountId, amount } = req.body;
-  console.log("POST /transfer (v1.1)");
-
-  const fieldError = evaluateFieldsForTransfer(fromAccountId, toAccountId, amount);
-  if (fieldError) {
-    return res.status(400).json({ error: fieldError });
-  }
-
-  const accounts = await getAccounts();
-  const fromAccount = accounts.find(acc => acc.id === fromAccountId);
-  const toAccount = accounts.find(acc => acc.id === toAccountId);
-
-  if (!fromAccount || !toAccount) {
-    return res.status(404).json({ error: "One or both accounts not found." });
-  }
-
-  if (fromAccount.currency !== toAccount.currency) {
-    return res.status(400).json({ error: "Accounts must have the same currency" });
-  }
-
-  if (fromAccount.balance < amount) {
-    return res.status(400).json({ error: "Insufficient funds in source account." });
-  }
-
-  await setAccountBalance(fromAccountId, fromAccount.balance - amount);
-  await setAccountBalance(toAccountId, toAccount.balance + amount);
-
-  res.status(200).json({
-    message: "Transfer completed successfully",
-    fromAccountId,
-    toAccountId,
-    amount
-  });
-  registerResponseTime("accounts_transfer_response_time", start);
 });
 
 // -----------------------------------------------------------
