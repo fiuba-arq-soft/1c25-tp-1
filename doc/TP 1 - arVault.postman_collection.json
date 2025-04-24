@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "f5d7e4bb-d7fe-4bde-b652-e6f800fd4638",
+		"_postman_id": "89f200eb-3aab-436e-a245-3cee77cdbae0",
 		"name": "TP 1 - arVault",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "17207326"
+		"_exporter_id": "12799148"
 	},
 	"item": [
 		{
@@ -26,7 +26,7 @@
 			"response": []
 		},
 		{
-			"name": "Post Exchange",
+			"name": "Exchange",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -114,6 +114,36 @@
 					"port": "{{port}}",
 					"path": [
 						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set balance",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"balance\": 2000000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/accounts/1/balance",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"accounts",
+						"1",
+						"balance"
 					]
 				}
 			},

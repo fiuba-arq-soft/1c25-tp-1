@@ -152,6 +152,36 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Set balance",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"balance\": 2000000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/accounts/1/balance",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"accounts",
+						"1",
+						"balance"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
